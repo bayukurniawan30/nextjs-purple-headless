@@ -54,7 +54,8 @@ export interface Media {
   width: number
   height: number
   refId?: string
-  userId: string
+  userId?: string
+  user?: User
   createdAt?: string
   updatedAt?: string
 }

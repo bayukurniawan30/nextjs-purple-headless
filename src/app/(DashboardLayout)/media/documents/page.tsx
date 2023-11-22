@@ -275,12 +275,17 @@ const DocumentsPage = () => {
                 <TableRow>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      URL
+                      File Name
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Size
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Owner
                     </Typography>
                   </TableCell>
                   <TableCell size="small" align="center">
@@ -301,6 +306,11 @@ const DocumentsPage = () => {
                     <TableCell>
                       <Typography variant="subtitle2" fontWeight={600}>
                         {prettyBytes(media.size)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {media.user?.email}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
@@ -337,7 +347,10 @@ const DocumentsPage = () => {
       <Dialog open={openDeleteDialog} onClose={handleClose}>
         <DialogTitle>Delete Document</DialogTitle>
         <DialogContent dividers sx={{ width: { xs: '280px', sm: '500px' } }}>
-          <p>Are you sure want to delete {deleteDialogData?.url}</p>
+          <p>
+            Are you sure want to delete{' '}
+            {deleteDialogData ? getFileNameFromUrl(deleteDialogData.url) : 'this file'}?
+          </p>
         </DialogContent>
         <DialogActions
           sx={{

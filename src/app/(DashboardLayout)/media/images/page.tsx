@@ -286,7 +286,7 @@ const GeneralSettingsPage = () => {
             ))}
           </Grid>
         ) : (
-          <Typography>No images found</Typography>
+          <Typography sx={{ textAlign: 'center' }}>No images found</Typography>
         )}
       </DashboardCard>
 
@@ -317,7 +317,7 @@ const GeneralSettingsPage = () => {
                     Public URL
                   </Typography>
                   <OutlinedInput
-                    id="filled-adornment-password"
+                    id="field-public-url"
                     type="text"
                     fullWidth
                     readOnly
@@ -351,7 +351,7 @@ const GeneralSettingsPage = () => {
                     Thumbnail URL
                   </Typography>
                   <OutlinedInput
-                    id="filled-adornment-password"
+                    id="field-thumbnail-url"
                     type="text"
                     fullWidth
                     readOnly
