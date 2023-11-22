@@ -190,7 +190,7 @@ const GeneralSettingsPage = () => {
   const addNewButtonSkeleton = <Skeleton sx={{ width: '80px', height: '50px' }} />
 
   const { data, error, isLoading } = useSWR<ListData<Media>>(
-    '/medias',
+    mutateKey,
     () =>
       axios
         .get('/medias', {
