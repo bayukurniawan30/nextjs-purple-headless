@@ -30,6 +30,8 @@ import PageContainer from '../../components/container/PageContainer'
 import DashboardCard from '../../components/shared/DashboardCard'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import CustomSnackbar from '../../components/forms/theme-elements/CustomSnackbar'
+import prettyBytes from 'pretty-bytes'
+import getFileNameFromUrl from '@/utils/getFileNameFromUrl'
 
 const PageMeta: PageMeta = {
   title: 'Documents',
@@ -154,15 +156,25 @@ const DocumentsPage = () => {
 
   const addNewButtonSkeleton = <Skeleton sx={{ width: '80px', height: '50px' }} />
 
-  const { data, error, isLoading } = useSWR<ListData<Media>>('/medias', () =>
-    axios
-      .get('/medias', {
-        params: { filter: JSON.stringify([{ field: 'type', value: 'document', operator: '=' }]) },
-      })
-      .then((res) => {
-        return res.data
-      })
-      .catch((err) => err)
+  const { data, error, isLoading } = useSWR<ListData<Media>>(
+    '/medias',
+    () =>
+      axios
+        .get('/medias', {
+          params: { filter: JSON.stringify([{ field: 'type', value: 'document', operator: '=' }]) },
+        })
+        .then((res) => {
+          return res.data
+        })
+        .catch((err) => err),
+    {
+      fallbackData: {
+        data: [],
+        meta: {
+          total: 0,
+        },
+      },
+    }
   )
 
   if (error) return <div>failed to load</div>
@@ -237,12 +249,12 @@ const DocumentsPage = () => {
                 <TableRow key={media.id}>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {media.url}
+                      {getFileNameFromUrl(media.url)}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {media.size}
+                      {prettyBytes(media.size)}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
