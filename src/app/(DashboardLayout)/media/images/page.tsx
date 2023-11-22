@@ -44,10 +44,13 @@ import {
   ContentCopy,
   DeleteOutline,
   DownloadOutlined,
+  InsertInvitation,
   InsertPhoto,
+  Person,
 } from '@mui/icons-material'
 import copy from 'copy-to-clipboard'
 import prettyBytes from 'pretty-bytes'
+import moment from 'moment'
 
 const PageMeta: PageMeta = {
   title: 'Images',
@@ -420,6 +423,52 @@ const GeneralSettingsPage = () => {
                       <ListItemText
                         primary="File size"
                         secondary={dialogData ? `${prettyBytes(dialogData?.size)}` : ''}
+                      />
+                    </ListItem>
+                  </List>
+                </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Box sx={{ pl: 4, pr: 4, pb: 4 }}>
+                  <List
+                    sx={{
+                      width: '100%',
+                      maxWidth: 360,
+                      bgcolor: 'background.paper',
+                    }}
+                  >
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+                          <Person />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary="Uploaded by"
+                        secondary={dialogData ? `${dialogData?.user?.email}` : ''}
+                      />
+                    </ListItem>
+                  </List>
+                </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Box sx={{ pl: 4, pr: 4, pb: 4 }}>
+                  <List
+                    sx={{
+                      width: '100%',
+                      maxWidth: 360,
+                      bgcolor: 'background.paper',
+                    }}
+                  >
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+                          <InsertInvitation />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary="Uploaded at"
+                        secondary={dialogData ? `${moment().format(dialogData?.createdAt)}` : ''}
                       />
                     </ListItem>
                   </List>

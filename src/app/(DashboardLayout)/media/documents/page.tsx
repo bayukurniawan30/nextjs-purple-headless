@@ -285,7 +285,7 @@ const DocumentsPage = () => {
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Owner
+                      Uploaded by
                     </Typography>
                   </TableCell>
                   <TableCell size="small" align="center">
