@@ -196,7 +196,7 @@ const GeneralSettingsPage = () => {
     data: dateFormat,
     error: dateFormatError,
     isLoading: dateFormatLoading,
-  } = useSWR<Setting>(
+  } = useSWR<ListData<Setting>>(
     '/settings?filter=' + JSON.stringify([{ field: 'key', value: 'date-format', operator: '=' }]),
     () =>
       axios
@@ -215,7 +215,7 @@ const GeneralSettingsPage = () => {
     data: timeFormat,
     error: timeFormatError,
     isLoading: timeFormatLoading,
-  } = useSWR<Setting>(
+  } = useSWR<ListData<Setting>>(
     '/settings?filter=' + JSON.stringify([{ field: 'key', value: 'time-format', operator: '=' }]),
     () =>
       axios
@@ -419,9 +419,9 @@ const GeneralSettingsPage = () => {
                 </Box>
               </Stack>
             </Box>
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4, pb: 2 }}>
+                <Box sx={{ pl: 4, pr: 4 }}>
                   <List
                     sx={{
                       width: '100%',
@@ -444,7 +444,7 @@ const GeneralSettingsPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4, pb: 2 }}>
+                <Box sx={{ pl: 4, pr: 4 }}>
                   <List
                     sx={{
                       width: '100%',
@@ -467,7 +467,7 @@ const GeneralSettingsPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4, pb: 2 }}>
+                <Box sx={{ pl: 4, pr: 4 }}>
                   <List
                     sx={{
                       width: '100%',
@@ -490,7 +490,7 @@ const GeneralSettingsPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4, pb: 2 }}>
+                <Box sx={{ pl: 4, pr: 4 }}>
                   <List
                     sx={{
                       width: '100%',
@@ -509,7 +509,7 @@ const GeneralSettingsPage = () => {
                         secondary={
                           dialogData
                             ? `${moment(dialogData?.createdAt).format(
-                                dateFormat?.value + ' ' + timeFormat?.value
+                                dateFormat?.data[0].value + ' ' + timeFormat?.data[0].value
                               )}`
                             : ''
                         }
