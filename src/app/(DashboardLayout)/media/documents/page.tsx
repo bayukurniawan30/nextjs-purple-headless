@@ -330,7 +330,7 @@ const DocumentsPage = () => {
             </Table>
           </Box>
         ) : (
-          <Typography>No documents found</Typography>
+          <Typography sx={{ textAlign: 'center' }}>No documents found</Typography>
         )}
       </DashboardCard>
 
