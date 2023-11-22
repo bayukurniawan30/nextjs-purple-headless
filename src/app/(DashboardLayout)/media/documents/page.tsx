@@ -15,8 +15,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Fade,
   Grid,
   IconButton,
+  Paper,
   Skeleton,
   Table,
   TableBody,
@@ -32,6 +34,8 @@ import { IconPencil, IconTrash } from '@tabler/icons-react'
 import CustomSnackbar from '../../components/forms/theme-elements/CustomSnackbar'
 import prettyBytes from 'pretty-bytes'
 import getFileNameFromUrl from '@/utils/getFileNameFromUrl'
+import Image from 'next/image'
+import { DownloadOutlined } from '@mui/icons-material'
 
 const PageMeta: PageMeta = {
   title: 'Documents',
@@ -45,7 +49,7 @@ const PageMeta: PageMeta = {
       href: '/media/documents',
     },
   ],
-  image: '/images/header/users.svg',
+  image: '/images/header/documents.svg',
 }
 
 const DocumentsPage = () => {
@@ -192,7 +196,7 @@ const DocumentsPage = () => {
           breadcrumb={PageMeta.breadcrumb}
           image={PageMeta.image}
         />
-        <DashboardCard title={PageMeta.title}>
+        <DashboardCard headerAction={addNewButtonSkeleton}>
           <Grid container spacing={2}>
             {Array.from({ length: 3 }, (_, index) => (
               <Grid item xs={4} key={index}>
@@ -222,63 +226,112 @@ const DocumentsPage = () => {
   return (
     <PageContainer title={PageMeta.title} description={PageMeta.description}>
       <PageHeader title={PageMeta.title} breadcrumb={PageMeta.breadcrumb} image={PageMeta.image} />
+
+      <Fade in={showUpload}>
+        <Paper
+          elevation={0}
+          sx={{
+            width: '100%',
+            height: showUpload ? '200px' : 0,
+            opacity: showUpload ? 1 : 0,
+            mb: 3,
+            borderWidth: '2px',
+            borderStyle: 'dashed',
+            borderColor: 'grey.300',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer',
+            borderRadius: 3,
+          }}
+          {...getRootProps({ className: 'dropzone' })}
+        >
+          <input {...getInputProps()} />
+          <Image
+            src={'/images/other/upload.svg'}
+            alt="Upload"
+            width={150}
+            height={100}
+            style={{ opacity: showUpload ? 1 : 0 }}
+          ></Image>
+          <Typography sx={{ opacity: showUpload ? 1 : 0, mt: 2 }}>
+            Drag and drop some files here, or click to select file
+          </Typography>
+        </Paper>
+      </Fade>
+
       <DashboardCard headerAction={addNewButton} footer={pagination}>
-        <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
-          <Table
-            aria-label="users table"
-            sx={{
-              whiteSpace: 'nowrap',
-              mt: 2,
-            }}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    URL
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    Size
-                  </Typography>
-                </TableCell>
-                <TableCell size="small" align="center">
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    Action
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data?.data.map((media) => (
-                <TableRow key={media.id}>
+        {data && data.meta.total > 0 ? (
+          <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
+            <Table
+              aria-label="users table"
+              sx={{
+                whiteSpace: 'nowrap',
+                mt: 2,
+              }}
+            >
+              <TableHead>
+                <TableRow>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {getFileNameFromUrl(media.url)}
+                      URL
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {prettyBytes(media.size)}
+                      Size
                     </Typography>
                   </TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      color="error"
-                      aria-label="Delete user"
-                      onClick={() => {
-                        handleDeleteDialog(media)
-                      }}
-                    >
-                      <IconTrash />
-                    </IconButton>
+                  <TableCell size="small" align="center">
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Action
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
+              </TableHead>
+              <TableBody>
+                {data?.data.map((media) => (
+                  <TableRow key={media.id}>
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {getFileNameFromUrl(media.url)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {prettyBytes(media.size)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        color="primary"
+                        aria-label="Download"
+                        onClick={() => {
+                          handleOpenInNewTab(media.url)
+                        }}
+                      >
+                        <DownloadOutlined />
+                      </IconButton>
+
+                      <IconButton
+                        color="error"
+                        aria-label="Delete file"
+                        onClick={() => {
+                          handleDeleteDialog(media)
+                        }}
+                      >
+                        <IconTrash />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        ) : (
+          <Typography>No documents found</Typography>
+        )}
       </DashboardCard>
 
       <Dialog open={openDeleteDialog} onClose={handleClose}>
