@@ -29,7 +29,7 @@ import PageContainer from '@/app/(DashboardLayout)/components/container/PageCont
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard'
 import useSWR, { mutate } from 'swr'
 import axios from '@/lib/axios'
-import { ListData, Media } from '@/type/api'
+import { ListData, Media, Setting } from '@/type/api'
 import CustomButton from '../../components/shared/CustomButton'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import CustomSnackbar from '../../components/forms/theme-elements/CustomSnackbar'
@@ -191,6 +191,44 @@ const GeneralSettingsPage = () => {
   )
 
   const addNewButtonSkeleton = <Skeleton sx={{ width: '80px', height: '50px' }} />
+
+  const {
+    data: dateFormat,
+    error: dateFormatError,
+    isLoading: dateFormatLoading,
+  } = useSWR<Setting>(
+    '/settings?filter=' + JSON.stringify([{ field: 'key', value: 'date-format', operator: '=' }]),
+    () =>
+      axios
+        .get(`/settings`, {
+          params: {
+            filter: JSON.stringify([{ field: 'key', value: 'date-format', operator: '=' }]),
+          },
+        })
+        .then((res) => {
+          return res.data
+        })
+        .catch((err) => err)
+  )
+
+  const {
+    data: timeFormat,
+    error: timeFormatError,
+    isLoading: timeFormatLoading,
+  } = useSWR<Setting>(
+    '/settings?filter=' + JSON.stringify([{ field: 'key', value: 'time-format', operator: '=' }]),
+    () =>
+      axios
+        .get(`/settings`, {
+          params: {
+            filter: JSON.stringify([{ field: 'key', value: 'time-format', operator: '=' }]),
+          },
+        })
+        .then((res) => {
+          return res.data
+        })
+        .catch((err) => err)
+  )
 
   const { data, error, isLoading } = useSWR<ListData<Media>>(
     mutateKey,
@@ -383,7 +421,7 @@ const GeneralSettingsPage = () => {
             </Box>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4, pb: 4 }}>
+                <Box sx={{ pl: 4, pr: 4, pb: 2 }}>
                   <List
                     sx={{
                       width: '100%',
@@ -406,7 +444,7 @@ const GeneralSettingsPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4, pb: 4 }}>
+                <Box sx={{ pl: 4, pr: 4, pb: 2 }}>
                   <List
                     sx={{
                       width: '100%',
@@ -429,11 +467,11 @@ const GeneralSettingsPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4, pb: 4 }}>
+                <Box sx={{ pl: 4, pr: 4, pb: 2 }}>
                   <List
                     sx={{
                       width: '100%',
-                      maxWidth: 360,
+                      maxWidth: 400,
                       bgcolor: 'background.paper',
                     }}
                   >
@@ -452,11 +490,11 @@ const GeneralSettingsPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4, pb: 4 }}>
+                <Box sx={{ pl: 4, pr: 4, pb: 2 }}>
                   <List
                     sx={{
                       width: '100%',
-                      maxWidth: 360,
+                      maxWidth: 400,
                       bgcolor: 'background.paper',
                     }}
                   >
@@ -468,7 +506,13 @@ const GeneralSettingsPage = () => {
                       </ListItemAvatar>
                       <ListItemText
                         primary="Uploaded at"
-                        secondary={dialogData ? `${moment().format(dialogData?.createdAt)}` : ''}
+                        secondary={
+                          dialogData
+                            ? `${moment(dialogData?.createdAt).format(
+                                dateFormat?.value + ' ' + timeFormat?.value
+                              )}`
+                            : ''
+                        }
                       />
                     </ListItem>
                   </List>
