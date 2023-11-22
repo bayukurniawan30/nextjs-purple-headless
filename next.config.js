@@ -18,7 +18,7 @@ const nextConfig = {
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
           {
             key: 'Access-Control-Allow-Origin',
-            value: 'https://nextjs-purple-headless.vercel.app',
+            value: 'https://adonisjs-headless-api.vercel.app',
           }, // replace this your actual origin
           { key: 'Access-Control-Allow-Methods', value: 'GET,DELETE,PATCH,POST,PUT' },
           {
