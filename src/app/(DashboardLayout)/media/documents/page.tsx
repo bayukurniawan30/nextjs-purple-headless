@@ -58,24 +58,30 @@ const DocumentsPage = () => {
 
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const formData = new FormData()
-    formData.append('file', acceptedFiles[0])
+  const mutateKey =
+    '/medias?filter=' + JSON.stringify([{ field: 'type', value: 'document', operator: '=' }])
 
-    try {
-      await axios.post('/medias', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      const formData = new FormData()
+      formData.append('file', acceptedFiles[0])
 
-      mutate('/medias')
-    } catch (error) {
-      console.error('Error uploading files', error)
-    }
+      try {
+        await axios.post('/medias', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
 
-    // Do something with the files
-  }, [])
+        mutate(mutateKey)
+      } catch (error) {
+        console.error('Error uploading files', error)
+      }
+
+      // Do something with the files
+    },
+    [mutateKey]
+  )
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: {
@@ -110,7 +116,7 @@ const DocumentsPage = () => {
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage)
     setTimeout(() => {
-      mutate('/medias')
+      mutate(mutateKey)
     }, 500)
   }
 
@@ -120,7 +126,7 @@ const DocumentsPage = () => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
     setTimeout(() => {
-      mutate('/medias')
+      mutate(mutateKey)
     }, 500)
   }
 
@@ -134,7 +140,7 @@ const DocumentsPage = () => {
       axios
         .delete(`/medias/${deleteDialogData?.id}`)
         .then((res) => {
-          mutate('/medias')
+          mutate(mutateKey)
           enqueueSnackbar(`Media has been deleted successfully`, {
             variant: 'success',
             anchorOrigin: { horizontal: 'right', vertical: 'bottom' },

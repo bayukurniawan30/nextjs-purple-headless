@@ -77,6 +77,9 @@ const GeneralSettingsPage = () => {
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
   const [copyThumbUrl, setCopyThumbUrl] = useState(false)
 
+  const mutateKey =
+    '/medias?filter=' + JSON.stringify([{ field: 'type', value: 'image', operator: '=' }])
+
   const imageDialogContainerStyle = {
     'width': '100%',
     'display': 'flex',
@@ -87,24 +90,27 @@ const GeneralSettingsPage = () => {
     },
   }
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const formData = new FormData()
-    formData.append('file', acceptedFiles[0])
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      const formData = new FormData()
+      formData.append('file', acceptedFiles[0])
 
-    try {
-      await axios.post('/medias', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      try {
+        await axios.post('/medias', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
 
-      mutate('/medias')
-    } catch (error) {
-      console.error('Error uploading files', error)
-    }
+        mutate(mutateKey)
+      } catch (error) {
+        console.error('Error uploading files', error)
+      }
 
-    // Do something with the files
-  }, [])
+      // Do something with the files
+    },
+    [mutateKey]
+  )
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: {
@@ -160,7 +166,7 @@ const GeneralSettingsPage = () => {
       axios
         .delete(`/medias/${deleteDialogDialogData?.id}`)
         .then((res) => {
-          mutate('/medias')
+          mutate(mutateKey)
           enqueueSnackbar(`Media has been deleted successfully`, {
             variant: 'success',
             anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
@@ -183,15 +189,25 @@ const GeneralSettingsPage = () => {
 
   const addNewButtonSkeleton = <Skeleton sx={{ width: '80px', height: '50px' }} />
 
-  const { data, error, isLoading } = useSWR<ListData<Media>>('/medias', () =>
-    axios
-      .get('/medias', {
-        params: { filter: JSON.stringify([{ field: 'type', value: 'image', operator: '=' }]) },
-      })
-      .then((res) => {
-        return res.data
-      })
-      .catch((err) => err)
+  const { data, error, isLoading } = useSWR<ListData<Media>>(
+    '/medias',
+    () =>
+      axios
+        .get('/medias', {
+          params: { filter: JSON.stringify([{ field: 'type', value: 'image', operator: '=' }]) },
+        })
+        .then((res) => {
+          return res.data
+        })
+        .catch((err) => err),
+    {
+      fallbackData: {
+        data: [],
+        meta: {
+          total: 0,
+        },
+      },
+    }
   )
 
   if (error) return <div>failed to load</div>
