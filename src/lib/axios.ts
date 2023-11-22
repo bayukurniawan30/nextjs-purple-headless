@@ -7,8 +7,6 @@ const axios = Axios.create({
   withCredentials: true,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
   },
   baseURL: baseURL,
 })
