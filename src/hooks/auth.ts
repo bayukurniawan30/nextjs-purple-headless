@@ -1,130 +1,135 @@
-import useSWR from "swr";
-import axios from "@/lib/axios";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { User } from "@/type/api";
+import useSWR from 'swr'
+import axios from '@/lib/axios'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { User } from '@/type/api'
 
-declare type AuthMiddleware = "auth" | "guest";
+declare type AuthMiddleware = 'auth' | 'guest'
 
 interface IUseAuth {
-  middleware: AuthMiddleware;
-  redirectIfAuthenticated?: string;
+  middleware: AuthMiddleware
+  redirectIfAuthenticated?: string
 }
 
 interface IApiRequest {
-  setErrors: React.Dispatch<React.SetStateAction<never[]>>;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrors: React.Dispatch<React.SetStateAction<never[]>>
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
   // setStatus: React.Dispatch<React.SetStateAction<any | null>>
-  [key: string]: any;
+  [key: string]: any
 }
 
 export const useAuth = ({ middleware, redirectIfAuthenticated }: IUseAuth) => {
-  const router = useRouter();
+  const router = useRouter()
 
   const {
     data: user,
     error,
     mutate,
-  } = useSWR<User>("/me", () =>
+  } = useSWR<User>('/me', () =>
     axios
-      .get("/me", {
+      .get('/me', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
-      .then((res) => res.data)
-      .catch((error) => {
-        if (error.response.status !== 409) throw error;
-
-        router.push("/verify-email");
+      .then((res) => {
+        if (res.status === 200) {
+          localStorage.setItem('user', res.data)
+          return res.data
+        }
       })
-  );
+      .catch((error) => {
+        if (error.response.status !== 409) throw error
+
+        router.push('/verify-email')
+      })
+  )
 
   const register = async (args: IApiRequest) => {
-    const { setErrors, ...props } = args;
+    const { setErrors, ...props } = args
 
     // await csrf();
 
-    setErrors([]);
+    setErrors([])
 
     axios
-      .post("/register", props)
+      .post('/register', props)
       .then(() => mutate())
       .catch((error) => {
-        if (error.response.status !== 422) throw error;
+        if (error.response.status !== 422) throw error
 
-        setErrors(error.response.data.errors);
-      });
-  };
+        setErrors(error.response.data.errors)
+      })
+  }
 
   const login = async (args: IApiRequest) => {
-    const { setErrors, setLoading, ...props } = args;
+    const { setErrors, setLoading, ...props } = args
 
     // await csrf();
 
-    setErrors([]);
-    setLoading(true);
+    setErrors([])
+    setLoading(true)
     // setStatus(null);
 
     axios
-      .post("/login", props)
+      .post('/login', props)
       .then((response) => {
         if (response.status === 200) {
-          const token = response.data.token.token;
-          localStorage.setItem("token", token);
+          const token = response.data.token.token
+          localStorage.setItem('token', token)
         }
-        mutate();
+        mutate()
       })
       .catch((error) => {
-        if (error.response.status !== 422) throw error;
-        setErrors(error.response.data.errors);
-        setLoading(false);
-      });
-  };
+        if (error.response.status !== 422) throw error
+        setErrors(error.response.data.errors)
+        setLoading(false)
+      })
+  }
 
   const forgotPassword = async (args: IApiRequest) => {
-    const { setErrors, setStatus, email } = args;
+    const { setErrors, setStatus, email } = args
     // await csrf();
 
-    setErrors([]);
-    setStatus(null);
+    setErrors([])
+    setStatus(null)
 
     axios
-      .post("/forgot-password", { email })
+      .post('/forgot-password', { email })
       .then((response) => setStatus(response.data.status))
       .catch((error) => {
-        if (error.response.status !== 422) throw error;
+        if (error.response.status !== 422) throw error
 
-        setErrors(error.response.data.errors);
-      });
-  };
+        setErrors(error.response.data.errors)
+      })
+  }
 
   const resendEmailVerification = (args: IApiRequest) => {
-    const { setStatus } = args;
+    const { setStatus } = args
 
     axios
-      .post("/email/verification-notification")
-      .then((response) => setStatus(response.data.status));
-  };
+      .post('/email/verification-notification')
+      .then((response) => setStatus(response.data.status))
+  }
 
   const logout = async () => {
     if (!error) {
-      await axios.get("/logout").then(() => {
-        localStorage.removeItem("token");
-        mutate();
-      });
+      await axios.get('/logout').then(() => {
+        localStorage.removeItem('token')
+        mutate()
+      })
     }
 
-    window.location.pathname = "/authentication/login";
-  };
+    window.location.pathname = '/authentication/login'
+  }
 
   useEffect(() => {
-    if (middleware === "guest" && redirectIfAuthenticated && user)
-      router.push(redirectIfAuthenticated);
-    if (window.location.pathname === "/verify-email" && user)
-      router.push(redirectIfAuthenticated || "/");
-    if (middleware === "auth" && error) logout();
-  }, [user, error]);
+    if (middleware === 'guest' && redirectIfAuthenticated && user)
+      router.push(redirectIfAuthenticated)
+    if (window.location.pathname === '/verify-email' && user)
+      router.push(redirectIfAuthenticated || '/')
+    if (middleware === 'auth' && error) logout()
+  }, [user, error])
 
   return {
     user,
@@ -133,5 +138,5 @@ export const useAuth = ({ middleware, redirectIfAuthenticated }: IUseAuth) => {
     forgotPassword,
     resendEmailVerification,
     logout,
-  };
-};
+  }
+}

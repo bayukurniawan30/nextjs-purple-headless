@@ -51,6 +51,7 @@ import {
 import copy from 'copy-to-clipboard'
 import prettyBytes from 'pretty-bytes'
 import moment from 'moment'
+import getSignedInUser from '@/utils/getSignedInUser'
 
 const PageMeta: PageMeta = {
   title: 'Images',
@@ -421,7 +422,7 @@ const GeneralSettingsPage = () => {
             </Box>
             <Grid container spacing={1}>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4 }}>
+                <Box sx={{ pl: 3, pr: 3 }}>
                   <List
                     sx={{
                       width: '100%',
@@ -444,7 +445,7 @@ const GeneralSettingsPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4 }}>
+                <Box sx={{ pl: 3, pr: 3 }}>
                   <List
                     sx={{
                       width: '100%',
@@ -467,7 +468,7 @@ const GeneralSettingsPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4 }}>
+                <Box sx={{ pl: 3, pr: 3 }}>
                   <List
                     sx={{
                       width: '100%',
@@ -483,14 +484,22 @@ const GeneralSettingsPage = () => {
                       </ListItemAvatar>
                       <ListItemText
                         primary="Uploaded by"
-                        secondary={dialogData ? `${dialogData?.user?.email}` : ''}
+                        secondary={
+                          dialogData
+                            ? `${
+                                getSignedInUser()?.id === dialogData.user?.id
+                                  ? 'You'
+                                  : dialogData.user?.email
+                              }`
+                            : ''
+                        }
                       />
                     </ListItem>
                   </List>
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={{ pl: 4, pr: 4 }}>
+                <Box sx={{ pl: 3, pr: 3 }}>
                   <List
                     sx={{
                       width: '100%',

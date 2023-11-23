@@ -36,6 +36,7 @@ import prettyBytes from 'pretty-bytes'
 import getFileNameFromUrl from '@/utils/getFileNameFromUrl'
 import Image from 'next/image'
 import { DownloadOutlined } from '@mui/icons-material'
+import getSignedInUser from '@/utils/getSignedInUser'
 
 const PageMeta: PageMeta = {
   title: 'Documents',
@@ -310,7 +311,7 @@ const DocumentsPage = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {media.user?.email}
+                        {getSignedInUser()?.id === media.user?.id ? 'You' : media.user?.email}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
