@@ -77,6 +77,9 @@ export const useAuth = ({ middleware, redirectIfAuthenticated }: IUseAuth) => {
         if (response.status === 200) {
           const token = response.data.token.token
           localStorage.setItem('token', token)
+        } else {
+          setErrors(response.data.errors)
+          setLoading(false)
         }
         mutate()
       })

@@ -1,39 +1,39 @@
-import React, { useState } from "react";
-import { Box, Typography, Stack } from "@mui/material";
-import Link from "next/link";
+import React, { useState } from 'react'
+import { Box, Typography, Stack } from '@mui/material'
+import Link from 'next/link'
 
-import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField";
-import CustomButton from "@/app/(DashboardLayout)/components/shared/CustomButton";
-import { Controller, useForm } from "react-hook-form";
-import { useAuth } from "@/hooks/auth";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import humanizeString from "humanize-string";
+import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField'
+import CustomButton from '@/app/(DashboardLayout)/components/shared/CustomButton'
+import { Controller, useForm } from 'react-hook-form'
+import { useAuth } from '@/hooks/auth'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+import humanizeString from 'humanize-string'
 
 interface loginType {
-  title?: string;
-  subtitle?: JSX.Element | JSX.Element[];
-  subtext?: JSX.Element | JSX.Element[];
+  title?: string
+  subtitle?: JSX.Element | JSX.Element[]
+  subtext?: JSX.Element | JSX.Element[]
 }
 
 interface FormData {
-  email: string;
-  password: string;
+  email: string
+  password: string
 }
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
   password: yup.string().min(6).required(),
-});
+})
 
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
-  const [loading, setLoading] = useState(false);
-  const [errorData, setErrorData] = useState([]);
+  const [loading, setLoading] = useState(false)
+  const [errorData, setErrorData] = useState([])
 
   const { login } = useAuth({
-    middleware: "guest",
-    redirectIfAuthenticated: "/",
-  });
+    middleware: 'guest',
+    redirectIfAuthenticated: '/',
+  })
 
   const {
     control,
@@ -42,10 +42,10 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
-  });
+  })
 
   const onSubmitHandler = async (values: FormData) => {
     try {
@@ -54,11 +54,11 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
         password: values.password,
         setErrors: setErrorData,
         setLoading,
-      });
+      })
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
+  }
 
   return (
     <>
@@ -102,9 +102,9 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 fontWeight={600}
                 component="label"
                 mb="5px"
-                color={"error"}
+                color={'error'}
               >
-                {humanizeString(errors.email.message ?? "")}
+                {humanizeString(errors.email.message ?? '')}
               </Typography>
             )}
           </Box>
@@ -137,25 +137,20 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 fontWeight={600}
                 component="label"
                 mb="5px"
-                color={"error"}
+                color={'error'}
               >
-                {humanizeString(errors.password.message ?? "")}
+                {humanizeString(errors.password.message ?? '')}
               </Typography>
             )}
           </Box>
-          <Stack
-            justifyContent="space-between"
-            direction="row"
-            alignItems="center"
-            my={2}
-          >
+          <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
             <Typography
               component={Link}
               href="/"
               fontWeight="500"
               sx={{
-                textDecoration: "none",
-                color: "primary.main",
+                textDecoration: 'none',
+                color: 'primary.main',
               }}
             >
               Forgot Password ?
@@ -163,6 +158,17 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           </Stack>
         </Stack>
         <Box>
+          {errorData.length > 0 && (
+            <Typography
+              variant="subtitle1"
+              fontWeight={600}
+              component="label"
+              mb="5px"
+              color={'error'}
+            >
+              {errorData[0]}
+            </Typography>
+          )}
           <CustomButton
             variant="contained"
             size="large"
@@ -170,13 +176,13 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             type="submit"
             disabled={loading ? true : false}
           >
-            {loading ? "Signing you in..." : "Sign In"}
+            {loading ? 'Signing you in...' : 'Sign In'}
           </CustomButton>
         </Box>
         {subtitle}
       </form>
     </>
-  );
-};
+  )
+}
 
-export default AuthLogin;
+export default AuthLogin
