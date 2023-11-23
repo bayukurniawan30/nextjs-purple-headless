@@ -35,7 +35,7 @@ import CustomSnackbar from '../../components/forms/theme-elements/CustomSnackbar
 import prettyBytes from 'pretty-bytes'
 import getFileNameFromUrl from '@/utils/getFileNameFromUrl'
 import Image from 'next/image'
-import { DownloadOutlined } from '@mui/icons-material'
+import { ContentCopy, DownloadOutlined } from '@mui/icons-material'
 import getSignedInUser from '@/utils/getSignedInUser'
 
 const PageMeta: PageMeta = {
@@ -103,9 +103,13 @@ const DocumentsPage = () => {
 
   const handleShowUpload = () => setShowUpload((e) => !e)
 
-  const handleCopyToClipboard = (type: string, text: string) => {
+  const handleCopyToClipboard = (text: string) => {
     copy(text)
     setCopyPublicUrl(true)
+    enqueueSnackbar(`Document url has been copied to clipboard`, {
+      variant: 'success',
+      anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
+    })
   }
 
   const handleOpenInNewTab = (url: string) => {
@@ -315,6 +319,16 @@ const DocumentsPage = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
+                      <IconButton
+                        color="success"
+                        aria-label="Copy URL"
+                        onClick={() => {
+                          handleCopyToClipboard(media.url)
+                        }}
+                      >
+                        <ContentCopy />
+                      </IconButton>
+
                       <IconButton
                         color="primary"
                         aria-label="Download"
