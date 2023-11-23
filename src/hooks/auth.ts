@@ -74,6 +74,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated }: IUseAuth) => {
     axios
       .post('/login', props)
       .then((response) => {
+        console.log('🚀 ~ file: auth.ts:77 ~ .then ~ response:', response)
         if (response.status === 200) {
           const token = response.data.token.token
           localStorage.setItem('token', token)
