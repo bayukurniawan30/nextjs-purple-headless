@@ -28,7 +28,7 @@ const schema = yup.object().shape({
 
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const [loading, setLoading] = useState(false)
-  const [errorData, setErrorData] = useState([])
+  const [errorData, setErrorData] = useState([''])
 
   const { login } = useAuth({
     middleware: 'guest',
