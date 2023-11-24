@@ -12,7 +12,7 @@ interface IUseAuth {
 }
 
 interface IApiRequest {
-  setErrors: React.Dispatch<React.SetStateAction<never[]>>
+  setErrors: React.Dispatch<React.SetStateAction<string[]>>
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
   // setStatus: React.Dispatch<React.SetStateAction<any | null>>
   [key: string]: any
@@ -79,15 +79,13 @@ export const useAuth = ({ middleware, redirectIfAuthenticated }: IUseAuth) => {
           const token = response.data.token.token
           localStorage.setItem('token', token)
         } else {
-          setErrors(response.data.errors)
+          setErrors(["Can't sign in. Please try again."])
           setLoading(false)
         }
         mutate()
       })
       .catch((error) => {
-        console.log('🚀 ~ file: auth.ts:77 ~ .then ~ response:', error)
-        if (error.response.status !== 422) throw error
-        setErrors(error.response.data.errors)
+        setErrors(["Can't sign in. User is not exist."])
         setLoading(false)
       })
   }
