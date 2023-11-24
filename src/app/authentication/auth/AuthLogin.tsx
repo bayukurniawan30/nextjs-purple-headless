@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Typography, Stack } from '@mui/material'
+import { Box, Typography, Stack, Alert } from '@mui/material'
 import Link from 'next/link'
 
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField'
@@ -159,15 +159,9 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
         </Stack>
         <Box>
           {errorData.length > 0 && (
-            <Typography
-              variant="subtitle1"
-              fontWeight={600}
-              component="label"
-              mb="5px"
-              color={'error'}
-            >
+            <Alert sx={{ mx: 2 }} severity="error">
               {errorData[0]}
-            </Typography>
+            </Alert>
           )}
           <CustomButton
             variant="contained"
