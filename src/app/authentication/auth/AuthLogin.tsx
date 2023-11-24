@@ -158,8 +158,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           </Stack>
         </Stack>
         <Box>
-          {errorData.length > 0 && (
-            <Alert sx={{ mx: 2 }} severity="error">
+          {errorData.length > 0 && errorData[0].length > 0 && (
+            <Alert sx={{ mb: 2 }} severity="error" variant="filled">
               {errorData[0]}
             </Alert>
           )}
