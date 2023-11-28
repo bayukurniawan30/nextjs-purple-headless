@@ -223,6 +223,9 @@ const GeneralSettingsPage = () => {
         .get(`/settings`, {
           params: {
             filter: JSON.stringify([{ field: 'key', value: 'time-format', operator: '=' }]),
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
           },
         })
         .then((res) => {

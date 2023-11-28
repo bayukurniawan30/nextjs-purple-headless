@@ -142,7 +142,12 @@ const GeneralSettingsPage = () => {
 
   const { data, error, isLoading } = useSWR<ListData<Setting>>('/settings', () =>
     axios
-      .get('/settings', { params: { sort: 'key', order: 'asc' } })
+      .get('/settings', {
+        params: { sort: 'key', order: 'asc' },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
       .then((res) => {
         return res.data
       })

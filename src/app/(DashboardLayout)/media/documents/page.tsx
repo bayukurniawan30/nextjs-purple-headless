@@ -184,6 +184,9 @@ const DocumentsPage = () => {
       axios
         .get('/medias', {
           params: { filter: JSON.stringify([{ field: 'type', value: 'document', operator: '=' }]) },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         })
         .then((res) => {
           return res.data

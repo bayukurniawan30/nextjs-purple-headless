@@ -113,6 +113,9 @@ const UsersPage = () => {
             page: page + 1,
             limit: rowsPerPage,
           },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         })
         .then((res) => {
           return res.data
