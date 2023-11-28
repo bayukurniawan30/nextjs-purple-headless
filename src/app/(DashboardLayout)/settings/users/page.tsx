@@ -86,7 +86,11 @@ const UsersPage = () => {
   const onSubmitHandler = async () => {
     try {
       axios
-        .delete(`/users/${dialogData?.id}`)
+        .delete(`/users/${dialogData?.id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
         .then((res) => {
           mutate('/users')
           enqueueSnackbar(`${dialogData?.email} has been deleted successfully`, {

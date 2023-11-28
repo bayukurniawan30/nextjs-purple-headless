@@ -11,12 +11,6 @@ const axios = Axios.create({
   baseURL: baseURL,
 })
 
-// if (typeof window !== 'undefined' && localStorage.getItem('token')) {
-//   const token = localStorage.getItem('token')
-//   axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
-
-// }
-
 axios.interceptors.response.use(
   (response) => {
     const token = localStorage.getItem('token') // replace with your actual key

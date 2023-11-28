@@ -66,9 +66,7 @@ const DocumentsPage = () => {
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
 
   const dateFormat = useSettingsStore.getState().getSettingByKey('date-format')
-  console.log('🚀 ~ file: page.tsx:69 ~ DocumentsPage ~ dateFormat:', dateFormat)
   const timeFormat = useSettingsStore.getState().getSettingByKey('time-format')
-  console.log('🚀 ~ file: page.tsx:71 ~ DocumentsPage ~ timeFormat:', timeFormat)
 
   const mutateKey =
     '/medias?filter=' + JSON.stringify([{ field: 'type', value: 'document', operator: '=' }])
@@ -82,6 +80,7 @@ const DocumentsPage = () => {
         await axios.post('/medias', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
         })
 
@@ -154,7 +153,11 @@ const DocumentsPage = () => {
   const onDeleteHandler = async () => {
     try {
       axios
-        .delete(`/medias/${deleteDialogData?.id}`)
+        .delete(`/medias/${deleteDialogData?.id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
         .then((res) => {
           mutate(mutateKey)
           enqueueSnackbar(`Media has been deleted successfully`, {

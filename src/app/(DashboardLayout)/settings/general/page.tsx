@@ -121,7 +121,15 @@ const GeneralSettingsPage = () => {
   const onSubmitHandler = async (data: FormData) => {
     try {
       axios
-        .put(`/settings/${dialogData?.id}`, { value: data.value })
+        .put(
+          `/settings/${dialogData?.id}`,
+          { value: data.value },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        )
         .then((res) => {
           mutate('/settings')
           enqueueSnackbar(

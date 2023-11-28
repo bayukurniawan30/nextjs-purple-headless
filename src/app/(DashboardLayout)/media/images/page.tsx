@@ -52,6 +52,7 @@ import copy from 'copy-to-clipboard'
 import prettyBytes from 'pretty-bytes'
 import moment from 'moment'
 import getSignedInUser from '@/utils/getSignedInUser'
+import { useSettingsStore } from '@/hooks/settings'
 
 const PageMeta: PageMeta = {
   title: 'Images',
@@ -81,6 +82,9 @@ const GeneralSettingsPage = () => {
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
   const [copyThumbUrl, setCopyThumbUrl] = useState(false)
 
+  const dateFormat = useSettingsStore.getState().getSettingByKey('date-format')
+  const timeFormat = useSettingsStore.getState().getSettingByKey('time-format')
+
   const mutateKey =
     '/medias?filter=' + JSON.stringify([{ field: 'type', value: 'image', operator: '=' }])
 
@@ -103,6 +107,7 @@ const GeneralSettingsPage = () => {
         await axios.post('/medias', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
         })
 
@@ -168,7 +173,11 @@ const GeneralSettingsPage = () => {
   const onDeleteHandler = async () => {
     try {
       axios
-        .delete(`/medias/${deleteDialogDialogData?.id}`)
+        .delete(`/medias/${deleteDialogDialogData?.id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
         .then((res) => {
           mutate(mutateKey)
           enqueueSnackbar(`Media has been deleted successfully`, {
@@ -193,53 +202,15 @@ const GeneralSettingsPage = () => {
 
   const addNewButtonSkeleton = <Skeleton sx={{ width: '80px', height: '50px' }} />
 
-  const {
-    data: dateFormat,
-    error: dateFormatError,
-    isLoading: dateFormatLoading,
-  } = useSWR<ListData<Setting>>(
-    '/settings?filter=' + JSON.stringify([{ field: 'key', value: 'date-format', operator: '=' }]),
-    () =>
-      axios
-        .get(`/settings`, {
-          params: {
-            filter: JSON.stringify([{ field: 'key', value: 'date-format', operator: '=' }]),
-          },
-        })
-        .then((res) => {
-          return res.data
-        })
-        .catch((err) => err)
-  )
-
-  const {
-    data: timeFormat,
-    error: timeFormatError,
-    isLoading: timeFormatLoading,
-  } = useSWR<ListData<Setting>>(
-    '/settings?filter=' + JSON.stringify([{ field: 'key', value: 'time-format', operator: '=' }]),
-    () =>
-      axios
-        .get(`/settings`, {
-          params: {
-            filter: JSON.stringify([{ field: 'key', value: 'time-format', operator: '=' }]),
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          },
-        })
-        .then((res) => {
-          return res.data
-        })
-        .catch((err) => err)
-  )
-
   const { data, error, isLoading } = useSWR<ListData<Media>>(
     mutateKey,
     () =>
       axios
         .get('/medias', {
           params: { filter: JSON.stringify([{ field: 'type', value: 'image', operator: '=' }]) },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         })
         .then((res) => {
           return res.data
@@ -520,8 +491,8 @@ const GeneralSettingsPage = () => {
                         primary="Uploaded at"
                         secondary={
                           dialogData
-                            ? `${moment(dialogData?.createdAt).format(
-                                dateFormat?.data[0].value + ' ' + timeFormat?.data[0].value
+                            ? `${moment(dialogData.createdAt).format(
+                                dateFormat?.value + ' ' + timeFormat?.value
                               )}`
                             : ''
                         }
