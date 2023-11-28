@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import PageHeader, { PageMeta } from '../../components/shared/PageHeader'
 import axios from '@/lib/axios'
 import useSWR, { mutate } from 'swr'
@@ -64,6 +64,11 @@ const DocumentsPage = () => {
   const [deleteDialogData, setdeleteDialogData] = useState<Media | null>(null)
 
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
+
+  const { fetchSettings } = useSettingsStore()
+  useEffect(() => {
+    fetchSettings()
+  }, [])
 
   const dateFormat = useSettingsStore.getState().getSettingByKey('date-format')
   const timeFormat = useSettingsStore.getState().getSettingByKey('time-format')
