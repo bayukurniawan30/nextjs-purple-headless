@@ -1,7 +1,7 @@
 import Axios from 'axios'
 import { enqueueSnackbar } from 'notistack'
 
-const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL
+export const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const axios = Axios.create({
   withCredentials: true,

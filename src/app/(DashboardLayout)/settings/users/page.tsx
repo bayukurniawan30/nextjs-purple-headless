@@ -102,20 +102,30 @@ const UsersPage = () => {
     }
   }
 
-  const { data, error, isLoading } = useSWR<ListData<User>>('/users', () =>
-    axios
-      .get('/users', {
-        params: {
-          sort: 'created_at',
-          order: 'desc',
-          page: page + 1,
-          limit: rowsPerPage,
+  const { data, error, isLoading } = useSWR<ListData<User>>(
+    '/users',
+    () =>
+      axios
+        .get('/users', {
+          params: {
+            sort: 'created_at',
+            order: 'desc',
+            page: page + 1,
+            limit: rowsPerPage,
+          },
+        })
+        .then((res) => {
+          return res.data
+        })
+        .catch((err) => err),
+    {
+      fallbackData: {
+        data: [],
+        meta: {
+          total: 0,
         },
-      })
-      .then((res) => {
-        return res.data
-      })
-      .catch((err) => err)
+      },
+    }
   )
 
   if (error) return <div>failed to load</div>
@@ -168,81 +178,85 @@ const UsersPage = () => {
     <PageContainer title={PageMeta.title} description={PageMeta.description}>
       <PageHeader title={PageMeta.title} breadcrumb={PageMeta.breadcrumb} image={PageMeta.image} />
       <DashboardCard headerAction={addNewButton} footer={pagination}>
-        <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
-          <Table
-            aria-label="users table"
-            sx={{
-              whiteSpace: 'nowrap',
-              mt: 2,
-            }}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    Name
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    Email
-                  </Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    Admin
-                  </Typography>
-                </TableCell>
-                <TableCell size="small" align="center">
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    Action
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data?.data.map((user) => (
-                <TableRow key={user.email}>
+        {data && data.meta.total > 0 ? (
+          <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
+            <Table
+              aria-label="users table"
+              sx={{
+                whiteSpace: 'nowrap',
+                mt: 2,
+              }}
+            >
+              <TableHead>
+                <TableRow>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {user.profile.fullName}
+                      Name
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {user.email}
+                      Email
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {user.isAdmin ? <IconCheck /> : null}
+                      Admin
                     </Typography>
                   </TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      color="primary"
-                      aria-label="Details"
-                      onClick={() => {
-                        handleGotoEdit(user)
-                      }}
-                    >
-                      <IconPencil />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      aria-label="Delete user"
-                      onClick={() => {
-                        handleClickOpen(user)
-                      }}
-                    >
-                      <IconTrash />
-                    </IconButton>
+                  <TableCell size="small" align="center">
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Action
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
+              </TableHead>
+              <TableBody>
+                {data?.data.map((user) => (
+                  <TableRow key={user.email}>
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {user.profile.fullName}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {user.email}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {user.isAdmin ? <IconCheck /> : null}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        color="primary"
+                        aria-label="Details"
+                        onClick={() => {
+                          handleGotoEdit(user)
+                        }}
+                      >
+                        <IconPencil />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        aria-label="Delete user"
+                        onClick={() => {
+                          handleClickOpen(user)
+                        }}
+                      >
+                        <IconTrash />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        ) : (
+          <Typography sx={{ textAlign: 'center' }}>No users found</Typography>
+        )}
       </DashboardCard>
 
       <Dialog open={open} onClose={handleClose}>

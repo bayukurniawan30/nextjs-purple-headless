@@ -3,8 +3,16 @@ import { Grid, Box } from '@mui/material'
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer'
 // components
 import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance'
+import { useSettingsStore } from '@/hooks/settings'
+import { useEffect } from 'react'
 
 const Dashboard = () => {
+  const { settings, fetchSettings } = useSettingsStore()
+
+  useEffect(() => {
+    fetchSettings()
+  }, [])
+
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
       <Box>

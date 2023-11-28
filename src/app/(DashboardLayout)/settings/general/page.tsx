@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import {
   Box,
   Button,
@@ -21,62 +21,62 @@ import {
   TableRow,
   TextField,
   Typography,
-} from "@mui/material";
-import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
-import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
-import useSWR, { mutate } from "swr";
-import axios from "@/lib/axios";
-import { ListData, Setting } from "@/type/api";
-import humanizeString from "humanize-string";
-import moment from "moment";
-import { IconPencil } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import CustomButton from "../../components/shared/CustomButton";
-import { Controller, useForm } from "react-hook-form";
-import CustomTextField from "../../components/forms/theme-elements/CustomTextField";
-import CustomSelect from "../../components/forms/theme-elements/CustomSelect";
-import { SnackbarProvider, enqueueSnackbar } from "notistack";
-import CustomSnackbar from "../../components/forms/theme-elements/CustomSnackbar";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import PageHeader, { PageMeta } from "../../components/shared/PageHeader";
+} from '@mui/material'
+import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer'
+import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard'
+import useSWR, { mutate } from 'swr'
+import axios from '@/lib/axios'
+import { ListData, Setting } from '@/type/api'
+import humanizeString from 'humanize-string'
+import moment from 'moment'
+import { IconPencil } from '@tabler/icons-react'
+import { useEffect, useState } from 'react'
+import CustomButton from '../../components/shared/CustomButton'
+import { Controller, useForm } from 'react-hook-form'
+import CustomTextField from '../../components/forms/theme-elements/CustomTextField'
+import CustomSelect from '../../components/forms/theme-elements/CustomSelect'
+import { SnackbarProvider, enqueueSnackbar } from 'notistack'
+import CustomSnackbar from '../../components/forms/theme-elements/CustomSnackbar'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+import PageHeader, { PageMeta } from '../../components/shared/PageHeader'
 
 interface FormData {
-  value: any;
+  value: any
 }
 
 interface SelectableValue {
-  key: string;
-  value: any;
+  key: string
+  value: any
 }
 
 interface DialogSetting extends Setting {
-  title?: string;
+  title?: string
 }
 
 const schema = yup.object().shape({
   value: yup.mixed().required(),
-});
+})
 
 const PageMeta: PageMeta = {
-  title: "General Settings",
-  description: "Setup general settings for your app",
+  title: 'General Settings',
+  description: 'Setup general settings for your app',
   breadcrumb: [
     {
-      text: "Settings",
+      text: 'Settings',
     },
     {
-      text: "General Settings",
-      href: "/settings/general",
+      text: 'General Settings',
+      href: '/settings/general',
     },
   ],
-  image: "/images/header/general-settings.svg",
-};
+  image: '/images/header/general-settings.svg',
+}
 
 const GeneralSettingsPage = () => {
-  const [open, setOpen] = useState(false);
-  const [dialogData, setDialogData] = useState<DialogSetting | null>(null);
-  useState<SelectableValue[]>();
+  const [open, setOpen] = useState(false)
+  const [dialogData, setDialogData] = useState<DialogSetting | null>(null)
+  useState<SelectableValue[]>()
 
   const {
     control,
@@ -88,72 +88,68 @@ const GeneralSettingsPage = () => {
     defaultValues: {
       value: dialogData?.value,
     },
-  });
+  })
 
   const handleClickOpen = (setting: Setting) => {
-    setOpen(true);
+    setOpen(true)
 
-    const dialogSetting: DialogSetting = setting;
-    dialogSetting.title = humanizeString(setting.key);
+    const dialogSetting: DialogSetting = setting
+    dialogSetting.title = humanizeString(setting.key)
 
-    let selectable = setting.selectable;
-    if (setting.key === "date-format" || setting.key === "time-format") {
+    let selectable = setting.selectable
+    if (setting.key === 'date-format' || setting.key === 'time-format') {
       const updatedSelectable = selectable.map((item: SelectableValue) => ({
         ...item,
         value: moment().format(item.key),
-      }));
-      dialogSetting.selectable = updatedSelectable;
+      }))
+      dialogSetting.selectable = updatedSelectable
     }
 
-    setDialogData(dialogSetting);
-  };
+    setDialogData(dialogSetting)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-    setValue("value", "");
-    setDialogData(null);
-  };
+    setOpen(false)
+    setValue('value', '')
+    setDialogData(null)
+  }
 
   useEffect(() => {
-    setValue("value", dialogData?.value);
-  }, [dialogData]);
+    setValue('value', dialogData?.value)
+  }, [dialogData])
 
   const onSubmitHandler = async (data: FormData) => {
     try {
       axios
         .put(`/settings/${dialogData?.id}`, { value: data.value })
         .then((res) => {
-          mutate("/settings");
+          mutate('/settings')
           enqueueSnackbar(
-            `${humanizeString(
-              dialogData?.key ?? ""
-            )} has been updated successfully`,
+            `${humanizeString(dialogData?.key ?? '')} has been updated successfully`,
             {
-              variant: "success",
-              anchorOrigin: { horizontal: "right", vertical: "bottom" },
+              variant: 'success',
+              anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
             }
-          );
-          setOpen(false);
-          return res.data;
-        })
-        .catch((err) => err);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const { data, error, isLoading } = useSWR<ListData<Setting>>(
-    "/settings",
-    () =>
-      axios
-        .get("/settings", { params: { sort: "key", order: "asc" } })
-        .then((res) => {
-          return res.data;
+          )
+          setOpen(false)
+          return res.data
         })
         .catch((err) => err)
-  );
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
-  if (error) return <div>failed to load</div>;
+  const { data, error, isLoading } = useSWR<ListData<Setting>>('/settings', () =>
+    axios
+      .get('/settings', { params: { sort: 'key', order: 'asc' } })
+      .then((res) => {
+        return res.data
+      })
+      .catch((err) => err)
+  )
+
+  if (error) return <div>failed to load</div>
   if (isLoading)
     return (
       <PageContainer title={PageMeta.title} description={PageMeta.description}>
@@ -174,21 +170,17 @@ const GeneralSettingsPage = () => {
           </Grid>
         </DashboardCard>
       </PageContainer>
-    );
+    )
 
   return (
     <PageContainer title={PageMeta.title} description={PageMeta.description}>
-      <PageHeader
-        title={PageMeta.title}
-        breadcrumb={PageMeta.breadcrumb}
-        image={PageMeta.image}
-      />
+      <PageHeader title={PageMeta.title} breadcrumb={PageMeta.breadcrumb} image={PageMeta.image} />
       <DashboardCard>
-        <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+        <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
           <Table
             aria-label="general settings table"
             sx={{
-              whiteSpace: "nowrap",
+              whiteSpace: 'nowrap',
               mt: 2,
             }}
           >
@@ -223,13 +215,13 @@ const GeneralSettingsPage = () => {
                     <Typography variant="subtitle2" fontWeight={600}>
                       {(() => {
                         switch (setting.key) {
-                          case "date-format":
-                            return moment().format(setting.value);
+                          case 'date-format':
+                            return moment().format(setting.value)
 
-                          case "time-format":
-                            return moment().format(setting.value);
+                          case 'time-format':
+                            return moment().format(setting.value)
                           default:
-                            return setting.value;
+                            return setting.value
                         }
                       })()}
                     </Typography>
@@ -239,7 +231,7 @@ const GeneralSettingsPage = () => {
                       color="primary"
                       aria-label="Edit value"
                       onClick={() => {
-                        handleClickOpen(setting);
+                        handleClickOpen(setting)
                       }}
                     >
                       <IconPencil />
@@ -255,7 +247,7 @@ const GeneralSettingsPage = () => {
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit(onSubmitHandler)}>
           <DialogTitle>{dialogData?.title}</DialogTitle>
-          <DialogContent dividers sx={{ width: { xs: "280px", sm: "500px" } }}>
+          <DialogContent dividers sx={{ width: { xs: '280px', sm: '500px' } }}>
             <Typography
               variant="subtitle1"
               fontWeight={600}
@@ -271,12 +263,7 @@ const GeneralSettingsPage = () => {
                 control={control}
                 rules={{ required: true }}
                 render={({ field }) => (
-                  <CustomTextField
-                    type="text"
-                    variant="outlined"
-                    fullWidth
-                    {...field}
-                  />
+                  <CustomTextField type="text" variant="outlined" fullWidth {...field} />
                 )}
               />
             ) : (
@@ -309,7 +296,7 @@ const GeneralSettingsPage = () => {
                 fontWeight={600}
                 component="label"
                 mb="5px"
-                color={"error"}
+                color={'error'}
               >
                 Error when submitting form. Please try again.
               </Typography>
@@ -335,7 +322,7 @@ const GeneralSettingsPage = () => {
         }}
       />
     </PageContainer>
-  );
-};
+  )
+}
 
-export default GeneralSettingsPage;
+export default GeneralSettingsPage

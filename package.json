@@ -63,7 +63,8 @@
     "react-hook-form": "^7.45.4",
     "swr": "^2.1.1",
     "typescript": "5.0.4",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.194"

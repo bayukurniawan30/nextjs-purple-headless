@@ -37,6 +37,8 @@ import getFileNameFromUrl from '@/utils/getFileNameFromUrl'
 import Image from 'next/image'
 import { ContentCopy, DownloadOutlined } from '@mui/icons-material'
 import getSignedInUser from '@/utils/getSignedInUser'
+import { useSettingsStore } from '@/hooks/settings'
+import moment from 'moment'
 
 const PageMeta: PageMeta = {
   title: 'Documents',
@@ -62,6 +64,9 @@ const DocumentsPage = () => {
   const [deleteDialogData, setdeleteDialogData] = useState<Media | null>(null)
 
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
+
+  const dateFormat = useSettingsStore.getState().getSettingByKey('date-format')
+  const timeFormat = useSettingsStore.getState().getSettingByKey('time-format')
 
   const mutateKey =
     '/medias?filter=' + JSON.stringify([{ field: 'type', value: 'document', operator: '=' }])
@@ -293,6 +298,11 @@ const DocumentsPage = () => {
                       Uploaded by
                     </Typography>
                   </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Uploaded at
+                    </Typography>
+                  </TableCell>
                   <TableCell size="small" align="center">
                     <Typography variant="subtitle2" fontWeight={600}>
                       Action
@@ -316,6 +326,11 @@ const DocumentsPage = () => {
                     <TableCell>
                       <Typography variant="subtitle2" fontWeight={600}>
                         {getSignedInUser()?.id === media.user?.id ? 'You' : media.user?.email}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {moment(media.createdAt).format(dateFormat + ' ' + timeFormat)}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
