@@ -71,13 +71,21 @@ const useSettingsStore = create<SettingsState>((set) => ({
     }
   },
   getSettingByKey: (key): Setting | null => {
-    // Get a specific setting by its ID
-    console.log(useSettingsStore.getState().settings)
-    return (
-      (useSettingsStore.getState().settings || []).find(
-        (setting: Setting) => setting.key === key
-      ) || null
-    )
+    // Get a specific setting by its key
+    const storedSettings = localStorage.getItem('settings')
+    if (storedSettings) {
+      return (
+        (JSON.parse(storedSettings) || []).find((setting: Setting) => setting.key === key) || null
+      )
+    } else {
+      // fetch settings again
+      useSettingsStore.getState().fetchSettings()
+      return (
+        (useSettingsStore.getState().settings || []).find(
+          (setting: Setting) => setting.key === key
+        ) || null
+      )
+    }
   },
 }))
 
