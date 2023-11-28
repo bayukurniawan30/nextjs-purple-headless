@@ -23,6 +23,14 @@ axios.interceptors.response.use(
     return response
   },
   (error) => {
+    const { config } = error
+
+    // Check if the request URL contains "/api/me"
+    if (config.url && config.url.includes('/api/me')) {
+      // Do something specific for requests to "/api/me" (e.g., don't show the snackbar)
+      return Promise.reject(error)
+    }
+
     enqueueSnackbar(`Failed to process your request. Please try again`, {
       variant: 'error',
       anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
