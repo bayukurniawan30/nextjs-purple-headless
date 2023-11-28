@@ -1,32 +1,32 @@
 // settingsStore.js
-import { baseURL } from '@/lib/axios'
+import axios, { baseURL } from '@/lib/axios'
 import { Setting } from '@/type/api'
 import Axios from 'axios'
 import { create } from 'zustand'
 
 interface SettingsState {
-  settings: Setting[] | null
+  settings: Setting[]
   fetchSettings: () => Promise<void>
   updateSetting: (newSetting: Setting) => Promise<void>
   getSettingByKey: (key: string) => Setting | null
 }
 
 // Need to re-create Axios instance, because the auth cannot be injected here
-const axios = Axios.create({
-  withCredentials: true,
-  headers: {
-    'X-Requested-With': 'XMLHttpRequest',
-  },
-  baseURL: baseURL,
-})
+// const axios = Axios.create({
+//   withCredentials: true,
+//   headers: {
+//     'X-Requested-With': 'XMLHttpRequest',
+//   },
+//   baseURL: baseURL,
+// })
 
-if (typeof window !== 'undefined' && localStorage.getItem('token')) {
-  const token = localStorage.getItem('token')
-  axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
-}
+// if (typeof window !== 'undefined' && localStorage.getItem('token')) {
+//   const token = localStorage.getItem('token')
+//   axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
+// }
 
 const useSettingsStore = create<SettingsState>((set) => ({
-  settings: null,
+  settings: [],
   fetchSettings: async () => {
     try {
       const response = await axios.get('/settings')
@@ -53,6 +53,7 @@ const useSettingsStore = create<SettingsState>((set) => ({
   },
   getSettingByKey: (key): Setting | null => {
     // Get a specific setting by its ID
+    console.log(useSettingsStore.getState().settings)
     return (
       (useSettingsStore.getState().settings || []).find(
         (setting: Setting) => setting.key === key
