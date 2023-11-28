@@ -66,7 +66,9 @@ const DocumentsPage = () => {
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
 
   const dateFormat = useSettingsStore.getState().getSettingByKey('date-format')
+  console.log('🚀 ~ file: page.tsx:69 ~ DocumentsPage ~ dateFormat:', dateFormat)
   const timeFormat = useSettingsStore.getState().getSettingByKey('time-format')
+  console.log('🚀 ~ file: page.tsx:71 ~ DocumentsPage ~ timeFormat:', timeFormat)
 
   const mutateKey =
     '/medias?filter=' + JSON.stringify([{ field: 'type', value: 'document', operator: '=' }])
@@ -330,7 +332,9 @@ const DocumentsPage = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {moment(media.createdAt).format(dateFormat + ' ' + timeFormat)}
+                        {moment(media.createdAt).format(
+                          dateFormat?.value + ' ' + timeFormat?.value
+                        )}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
