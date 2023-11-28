@@ -29,7 +29,11 @@ const useSettingsStore = create<SettingsState>((set) => ({
   settings: [],
   fetchSettings: async () => {
     try {
-      const response = await axios.get('/settings')
+      const response = await axios.get('/settings', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
       console.log('🚀 ~ file: settings.ts:33 ~ fetchSettings: ~ response:', response)
       set({ settings: response.data.data })
     } catch (error) {
