@@ -120,10 +120,12 @@ export const useAuth = ({ middleware, redirectIfAuthenticated }: IUseAuth) => {
 
   const logout = async () => {
     if (!error) {
-      await axios.get('/logout').then(() => {
-        localStorage.removeItem('token')
-        mutate()
-      })
+      await axios
+        .get('/logout', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
+        .then(() => {
+          localStorage.removeItem('token')
+          mutate()
+        })
     }
 
     window.location.pathname = '/authentication/login'
