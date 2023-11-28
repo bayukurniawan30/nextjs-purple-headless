@@ -30,7 +30,8 @@ const useSettingsStore = create<SettingsState>((set) => ({
   fetchSettings: async () => {
     try {
       const response = await axios.get('/settings')
-      set({ settings: response.data })
+      console.log('🚀 ~ file: settings.ts:33 ~ fetchSettings: ~ response:', response)
+      set({ settings: response.data.data })
     } catch (error) {
       console.error('Error fetching settings:', error)
     }
