@@ -1,8 +1,8 @@
 // settingsStore.js
-import axios, { baseURL } from '@/lib/axios'
+import axios from '@/lib/axios'
 import { Setting } from '@/type/api'
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { StateCreator, StoreApi, UseBoundStore, create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
 interface SettingsState {
   settings: Setting[]
@@ -11,7 +11,7 @@ interface SettingsState {
   getSettingByKey: (key: string) => Setting | null
 }
 
-const useSettingsStore = create<SettingsState>(
+const useSettingsStore: UseBoundStore<StoreApi<SettingsState>> = create<SettingsState>()(
   persist(
     (set) => ({
       settings: [],
@@ -59,8 +59,7 @@ const useSettingsStore = create<SettingsState>(
     }),
     {
       name: 'settings-storage',
-      storage: () => localStorage,
-      partialize: (state) => ({ settings: state.settings }),
+      storage: createJSONStorage(() => localStorage),
     }
   )
 )
