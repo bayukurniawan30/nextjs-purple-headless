@@ -65,11 +65,6 @@ const DocumentsPage = () => {
 
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
 
-  const { fetchSettings } = useSettingsStore()
-  useEffect(() => {
-    fetchSettings()
-  }, [])
-
   const dateFormat = useSettingsStore.getState().getSettingByKey('date-format')
   const timeFormat = useSettingsStore.getState().getSettingByKey('time-format')
 
