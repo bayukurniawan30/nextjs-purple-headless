@@ -29,13 +29,18 @@ const useSettingsStore = create<SettingsState>((set) => ({
   settings: [],
   fetchSettings: async () => {
     try {
-      const response = await axios.get('/settings', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      })
-      console.log('🚀 ~ file: settings.ts:33 ~ fetchSettings: ~ response:', response)
-      set({ settings: response.data.data })
+      const storedSettings = localStorage.getItem('settings')
+      if (storedSettings) {
+        set({ settings: JSON.parse(storedSettings) })
+      } else {
+        const response = await axios.get('/settings', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
+        set({ settings: response.data.data })
+        localStorage.setItem('settings', JSON.stringify(response.data.data))
+      }
     } catch (error) {
       console.error('Error fetching settings:', error)
     }
@@ -44,14 +49,23 @@ const useSettingsStore = create<SettingsState>((set) => ({
     try {
       // Make a request to update the settings on the server
       // For simplicity, let's assume a hypothetical update endpoint
-      await axios.put(`/settings/${newSetting.id}`, newSetting)
+      await axios.put(`/settings/${newSetting.id}`, newSetting, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
 
       // Update the state with the new settings
+      // and update settings in local storage
       set((state) => ({
-        settings: state.settings?.map((setting) =>
+        settings: state.settings.map((setting) =>
           setting.id === newSetting.id ? newSetting : setting
         ),
       }))
+
+      // Update settings in local storage
+      const updatedSettings = useSettingsStore.getState().settings
+      localStorage.setItem('settings', JSON.stringify(updatedSettings))
     } catch (error) {
       console.error('Error updating settings:', error)
     }

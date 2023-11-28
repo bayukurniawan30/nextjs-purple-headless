@@ -40,6 +40,8 @@ import CustomSnackbar from '../../components/forms/theme-elements/CustomSnackbar
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import PageHeader, { PageMeta } from '../../components/shared/PageHeader'
+import { useSettingsStore } from '@/hooks/settings'
+import { AxiosResponse } from 'axios'
 
 interface FormData {
   value: any
@@ -77,6 +79,7 @@ const GeneralSettingsPage = () => {
   const [open, setOpen] = useState(false)
   const [dialogData, setDialogData] = useState<DialogSetting | null>(null)
   useState<SelectableValue[]>()
+  const { settings, fetchSettings, updateSetting } = useSettingsStore()
 
   const {
     control,
@@ -130,7 +133,9 @@ const GeneralSettingsPage = () => {
             },
           }
         )
-        .then((res) => {
+        .then((res: AxiosResponse<Setting>) => {
+          console.log('🚀 ~ file: page.tsx:137 ~ .then ~ res:', res)
+          updateSetting(res.data)
           mutate('/settings')
           enqueueSnackbar(
             `${humanizeString(dialogData?.key ?? '')} has been updated successfully`,
