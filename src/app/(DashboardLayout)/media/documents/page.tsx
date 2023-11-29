@@ -11,6 +11,7 @@ import CustomButton from '../../components/shared/CustomButton'
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -62,6 +63,7 @@ const DocumentsPage = () => {
   const [showUpload, setShowUpload] = useState(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [deleteDialogData, setdeleteDialogData] = useState<Media | null>(null)
+  const [disable, setDisable] = useState(false)
 
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
 
@@ -152,6 +154,8 @@ const DocumentsPage = () => {
 
   const onDeleteHandler = async () => {
     try {
+      setDisable(true)
+
       axios
         .delete(`/medias/${deleteDialogData?.id}`, {
           headers: {
@@ -167,8 +171,12 @@ const DocumentsPage = () => {
           setOpenDeleteDialog(false)
           return res.data
         })
-        .catch((err) => err)
+        .catch((err) => {
+          setDisable(true)
+          err
+        })
     } catch (e) {
+      setDisable(true)
       console.log(e)
     }
   }
@@ -401,6 +409,11 @@ const DocumentsPage = () => {
           <Button variant="contained" color="error" disableElevation onClick={onDeleteHandler}>
             Delete
           </Button>
+          <CircularProgress
+            color="primary"
+            size={24}
+            sx={{ marginLeft: 2, display: disable ? 'block' : 'none' }}
+          />
         </DialogActions>
       </Dialog>
 
