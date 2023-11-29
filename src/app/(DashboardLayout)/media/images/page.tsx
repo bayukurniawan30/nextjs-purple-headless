@@ -194,11 +194,11 @@ const GeneralSettingsPage = () => {
           return res.data
         })
         .catch((err) => {
-          setDisable(true)
+          setDisable(false)
           err
         })
     } catch (e) {
-      setDisable(true)
+      setDisable(false)
       console.log(e)
     }
   }
