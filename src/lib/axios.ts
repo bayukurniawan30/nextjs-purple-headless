@@ -23,6 +23,7 @@ axios.interceptors.response.use(
     return response
   },
   (error) => {
+    console.log('🚀 ~ file: axios.ts:26 ~ error:', error)
     const { config } = error
 
     // Check if the request URL contains "/api/me"
