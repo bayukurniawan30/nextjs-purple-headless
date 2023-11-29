@@ -35,6 +35,7 @@ axios.interceptors.response.use(
     enqueueSnackbar(`Failed to process your request. Please try again`, {
       variant: 'error',
       anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
+      className: 'top-level-snackbar',
     })
 
     // Trigger an alert here (e.g., using a notification library or custom function)
