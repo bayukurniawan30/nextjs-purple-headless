@@ -4,6 +4,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -53,6 +54,7 @@ import prettyBytes from 'pretty-bytes'
 import moment from 'moment'
 import getSignedInUser from '@/utils/getSignedInUser'
 import { useSettingsStore } from '@/hooks/settings'
+import DeleteDialog from '../../components/shared/DeleteDialog'
 
 const PageMeta: PageMeta = {
   title: 'Images',
@@ -78,6 +80,7 @@ const GeneralSettingsPage = () => {
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [deleteDialogDialogData, setDeleteDialogDialogData] = useState<Media | null>(null)
+  const [disable, setDisable] = useState(false)
 
   const [copyPublicUrl, setCopyPublicUrl] = useState(false)
   const [copyThumbUrl, setCopyThumbUrl] = useState(false)
@@ -172,6 +175,8 @@ const GeneralSettingsPage = () => {
 
   const onDeleteHandler = async () => {
     try {
+      setDisable(true)
+
       axios
         .delete(`/medias/${deleteDialogDialogData?.id}`, {
           headers: {
@@ -188,8 +193,12 @@ const GeneralSettingsPage = () => {
           setOpen(false)
           return res.data
         })
-        .catch((err) => err)
+        .catch((err) => {
+          setDisable(true)
+          err
+        })
     } catch (e) {
+      setDisable(true)
       console.log(e)
     }
   }
@@ -570,22 +579,13 @@ const GeneralSettingsPage = () => {
         </Grid>
       </Dialog>
 
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeteleDialog}>
-        <DialogTitle>Delete User</DialogTitle>
-        <DialogContent dividers sx={{ width: { xs: '280px', sm: '500px' } }}>
-          <p>Are you sure want to delete this media?</p>
-        </DialogContent>
-        <DialogActions
-          sx={{
-            padding: 3,
-          }}
-        >
-          <Button onClick={handleCloseDeteleDialog}>Cancel</Button>
-          <Button variant="contained" color="error" disableElevation onClick={onDeleteHandler}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteDialog
+        open={openDeleteDialog}
+        onClose={handleClose}
+        onDeleteHandler={onDeleteHandler}
+        itemToDelete={'this media'}
+        disable={disable}
+      />
 
       <SnackbarProvider
         Components={{

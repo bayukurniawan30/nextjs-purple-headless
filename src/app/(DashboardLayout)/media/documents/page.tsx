@@ -40,6 +40,7 @@ import { ContentCopy, DownloadOutlined } from '@mui/icons-material'
 import getSignedInUser from '@/utils/getSignedInUser'
 import { useSettingsStore } from '@/hooks/settings'
 import moment from 'moment'
+import DeleteDialog from '../../components/shared/DeleteDialog'
 
 const PageMeta: PageMeta = {
   title: 'Documents',
@@ -392,30 +393,13 @@ const DocumentsPage = () => {
         )}
       </DashboardCard>
 
-      <Dialog open={openDeleteDialog} onClose={handleClose}>
-        <DialogTitle>Delete Document</DialogTitle>
-        <DialogContent dividers sx={{ width: { xs: '280px', sm: '500px' } }}>
-          <p>
-            Are you sure want to delete{' '}
-            {deleteDialogData ? getFileNameFromUrl(deleteDialogData.url) : 'this file'}?
-          </p>
-        </DialogContent>
-        <DialogActions
-          sx={{
-            padding: 3,
-          }}
-        >
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" color="error" disableElevation onClick={onDeleteHandler}>
-            Delete
-          </Button>
-          <CircularProgress
-            color="primary"
-            size={24}
-            sx={{ marginLeft: 2, display: disable ? 'block' : 'none' }}
-          />
-        </DialogActions>
-      </Dialog>
+      <DeleteDialog
+        open={openDeleteDialog}
+        onClose={handleClose}
+        onDeleteHandler={onDeleteHandler}
+        itemToDelete={deleteDialogData ? getFileNameFromUrl(deleteDialogData.url) : 'this file'}
+        disable={disable}
+      />
 
       <SnackbarProvider
         Components={{

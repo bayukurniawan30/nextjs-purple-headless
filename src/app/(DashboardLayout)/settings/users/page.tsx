@@ -29,6 +29,7 @@ import CustomSnackbar from '@/app/(DashboardLayout)/components/forms/theme-eleme
 import PageHeader, { PageMeta } from '@/app/(DashboardLayout)/components/shared/PageHeader'
 import CustomButton from '@/app/(DashboardLayout)/components/shared/CustomButton'
 import { useRouter } from 'next/navigation'
+import DeleteDialog from '../../components/shared/DeleteDialog'
 
 const PageMeta: PageMeta = {
   title: 'Users',
@@ -51,6 +52,7 @@ const UsersPage = () => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [dialogData, setDialogData] = useState<User | null>(null)
+  const [disable, setDisable] = useState(false)
 
   const handleClickOpen = (user: User) => {
     setOpen(true)
@@ -85,6 +87,8 @@ const UsersPage = () => {
 
   const onSubmitHandler = async () => {
     try {
+      setDisable(true)
+
       axios
         .delete(`/users/${dialogData?.id}`, {
           headers: {
@@ -100,8 +104,12 @@ const UsersPage = () => {
           setOpen(false)
           return res.data
         })
-        .catch((err) => err)
+        .catch((err) => {
+          setDisable(false)
+          err
+        })
     } catch (e) {
+      setDisable(false)
       console.log(e)
     }
   }
@@ -266,22 +274,13 @@ const UsersPage = () => {
         )}
       </DashboardCard>
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete User</DialogTitle>
-        <DialogContent dividers sx={{ width: { xs: '280px', sm: '500px' } }}>
-          <p>Are you sure want to delete {dialogData?.profile.fullName}</p>
-        </DialogContent>
-        <DialogActions
-          sx={{
-            padding: 3,
-          }}
-        >
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" color="error" disableElevation onClick={onSubmitHandler}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteDialog
+        open={open}
+        onClose={handleClose}
+        onDeleteHandler={onSubmitHandler}
+        itemToDelete={dialogData?.profile.fullName ?? 'this user'}
+        disable={disable}
+      />
 
       <SnackbarProvider
         Components={{
