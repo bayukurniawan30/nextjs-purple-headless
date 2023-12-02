@@ -13,6 +13,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  LinearProgress,
   List,
   ListItem,
   ListItemAvatar,
@@ -76,6 +77,7 @@ const GeneralSettingsPage = () => {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [showUpload, setShowUpload] = useState(false)
+  const [showUploadProgress, setShowUploadProgress] = useState(false)
   const [dialogData, setDialogData] = useState<Media | null>(null)
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
@@ -103,6 +105,8 @@ const GeneralSettingsPage = () => {
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
+      setShowUploadProgress(true)
+
       const formData = new FormData()
       formData.append('file', acceptedFiles[0])
 
@@ -114,8 +118,10 @@ const GeneralSettingsPage = () => {
           },
         })
 
+        setShowUploadProgress(false)
         mutate(mutateKey)
       } catch (error) {
+        setShowUploadProgress(false)
         console.error('Error uploading files', error)
       }
 
@@ -237,6 +243,12 @@ const GeneralSettingsPage = () => {
     }
   )
 
+  const uploadProgress = (
+    <Box sx={{ width: '100%', mt: 2, mb: 2 }}>
+      <LinearProgress />
+    </Box>
+  )
+
   if (error) return <div>failed to load</div>
   if (isLoading)
     return (
@@ -295,6 +307,8 @@ const GeneralSettingsPage = () => {
           </Typography>
         </Paper>
       </Fade>
+
+      {showUploadProgress ? uploadProgress : <></>}
 
       <DashboardCard headerAction={addNewButton}>
         {data && data.meta.total > 0 ? (
