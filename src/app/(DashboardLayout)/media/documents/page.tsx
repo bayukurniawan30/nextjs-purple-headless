@@ -288,7 +288,10 @@ const DocumentsPage = () => {
         </Paper>
       </Fade>
 
-      <DashboardCard headerAction={addNewButton} footer={pagination}>
+      <DashboardCard
+        headerAction={addNewButton}
+        footer={data && data.meta.total > 0 ? pagination : undefined}
+      >
         {data && data.meta.total > 0 ? (
           <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
             <Table

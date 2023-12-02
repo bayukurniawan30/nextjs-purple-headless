@@ -194,10 +194,12 @@ const GeneralSettingsPage = () => {
           return res.data
         })
         .catch((err) => {
+          setOpen(false)
           setDisable(false)
           err
         })
     } catch (e) {
+      setOpen(false)
       setDisable(false)
       console.log(e)
     }
@@ -298,7 +300,7 @@ const GeneralSettingsPage = () => {
         {data && data.meta.total > 0 ? (
           <Grid container spacing={2}>
             {data.data.map((image) => (
-              <Grid item xs={2} md={3} key={image.id}>
+              <Grid item xs={2} md={4} key={image.id}>
                 <Image
                   src={image.publicThumbnailUrl}
                   alt={image.publicThumbnailUrl}
