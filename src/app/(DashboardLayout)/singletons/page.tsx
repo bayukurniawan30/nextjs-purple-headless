@@ -1,3 +1,4 @@
+'use client'
 import { useSettingsStore } from '@/hooks/settings'
 import axios from '@/lib/axios'
 import { Collection, ListData, Singleton } from '@/type/api'
