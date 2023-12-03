@@ -155,10 +155,8 @@ const CollectionsPage = () => {
         />
         <DashboardCard headerAction={addNewButtonSkeleton}>
           <Grid container spacing={2}>
-            {Array.from({ length: 3 }, (_, index) => (
+            {Array.from({ length: 5 }, (_, index) => (
               <Grid item xs={5} key={index}>
-                <Skeleton sx={{ marginBottom: 1 }} />
-                <Skeleton sx={{ marginBottom: 1 }} />
                 <Skeleton sx={{ marginBottom: 1 }} />
                 <Skeleton sx={{ marginBottom: 1 }} />
                 <Skeleton />
