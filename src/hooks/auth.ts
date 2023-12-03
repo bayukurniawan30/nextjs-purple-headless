@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from '@/type/api'
 import { useSettingsStore } from './settings'
+import { useFieldsStore } from './availableFields'
 
 declare type AuthMiddleware = 'auth' | 'guest'
 
@@ -80,6 +81,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated }: IUseAuth) => {
           const token = response.data.token.token
           localStorage.setItem('token', token)
           useSettingsStore.getState().fetchSettings()
+          useFieldsStore.getState().fetchFields()
           mutate()
         } else {
           setErrors(["Can't sign in. Please try again."])

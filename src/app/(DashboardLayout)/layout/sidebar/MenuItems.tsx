@@ -24,22 +24,22 @@ const Menuitems = [
     icon: IconLayoutDashboard,
     href: '/',
   },
-  // {
-  //   navlabel: true,
-  //   subheader: "Content",
-  // },
-  // {
-  //   id: uniqueId(),
-  //   title: "Collections",
-  //   icon: IconStack2,
-  //   href: "/utilities/typography",
-  // },
-  // {
-  //   id: uniqueId(),
-  //   title: "Singletons",
-  //   icon: IconAlignBoxLeftMiddle,
-  //   href: "/utilities/shadow",
-  // },
+  {
+    navlabel: true,
+    subheader: 'Content',
+  },
+  {
+    id: uniqueId(),
+    title: 'Collections',
+    icon: IconStack2,
+    href: '/collections',
+  },
+  {
+    id: uniqueId(),
+    title: 'Singletons',
+    icon: IconAlignBoxLeftMiddle,
+    href: '/singletons',
+  },
   {
     navlabel: true,
     subheader: 'Media',

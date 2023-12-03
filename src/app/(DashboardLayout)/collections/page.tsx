@@ -1,25 +1,14 @@
-'use client'
-import { useCallback, useEffect, useState } from 'react'
-import PageHeader, { PageMeta } from '../../components/shared/PageHeader'
+import { useSettingsStore } from '@/hooks/settings'
 import axios from '@/lib/axios'
-import useSWR, { mutate } from 'swr'
-import { useDropzone } from 'react-dropzone'
-import { ListData, Media } from '@/type/api'
-import copy from 'copy-to-clipboard'
+import { Collection, ListData } from '@/type/api'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
-import CustomButton from '../../components/shared/CustomButton'
+import { useState } from 'react'
+import useSWR, { mutate } from 'swr'
+import CustomButton from '../components/shared/CustomButton'
 import {
   Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Fade,
   Grid,
   IconButton,
-  Paper,
   Skeleton,
   Table,
   TableBody,
@@ -29,106 +18,47 @@ import {
   TableRow,
   Typography,
 } from '@mui/material'
-import PageContainer from '../../components/container/PageContainer'
-import DashboardCard from '../../components/shared/DashboardCard'
-import { IconPencil, IconTrash } from '@tabler/icons-react'
-import CustomSnackbar from '../../components/forms/theme-elements/CustomSnackbar'
-import prettyBytes from 'pretty-bytes'
-import getFileNameFromUrl from '@/utils/getFileNameFromUrl'
-import Image from 'next/image'
-import { ContentCopy, DownloadOutlined } from '@mui/icons-material'
+import PageContainer from '../components/container/PageContainer'
+import PageHeader, { PageMeta } from '../components/shared/PageHeader'
+import DashboardCard from '../components/shared/DashboardCard'
 import getSignedInUser from '@/utils/getSignedInUser'
-import { useSettingsStore } from '@/hooks/settings'
 import moment from 'moment'
-import DeleteDialog from '../../components/shared/DeleteDialog'
+import { IconPencil, IconTrash } from '@tabler/icons-react'
+import DeleteDialog from '../components/shared/DeleteDialog'
+import CustomSnackbar from '../components/forms/theme-elements/CustomSnackbar'
 
 const PageMeta: PageMeta = {
-  title: 'Documents',
-  description: 'Store documents for your needs',
+  title: 'Collections',
+  description: 'Create a collection of data for your website and app',
   breadcrumb: [
     {
-      text: 'Media',
+      text: 'Collections',
     },
     {
-      text: 'Documents',
-      href: '/media/documents',
+      text: 'Collections',
+      href: '/collections',
     },
   ],
   image: '/images/header/documents.svg',
 }
 
-const DocumentsPage = () => {
+const CollectionsPage = () => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
   const [showUpload, setShowUpload] = useState(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-  const [deleteDialogData, setdeleteDialogData] = useState<Media | null>(null)
+  const [deleteDialogData, setdeleteDialogData] = useState<Collection | null>(null)
   const [disable, setDisable] = useState(false)
-
-  const [copyPublicUrl, setCopyPublicUrl] = useState(false)
 
   const dateFormat = useSettingsStore.getState().getSettingByKey('date-format')
   const timeFormat = useSettingsStore.getState().getSettingByKey('time-format')
 
-  const mutateKey =
-    '/medias?filter=' + JSON.stringify([{ field: 'type', value: 'document', operator: '=' }])
-
-  const onDrop = useCallback(
-    async (acceptedFiles: File[]) => {
-      const formData = new FormData()
-      formData.append('file', acceptedFiles[0])
-
-      try {
-        await axios.post('/medias', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
-
-        mutate(mutateKey)
-      } catch (error) {
-        console.error('Error uploading files', error)
-      }
-
-      // Do something with the files
-    },
-    [mutateKey]
-  )
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    maxFiles: 1,
-    accept: {
-      'application/pdf': ['.pdf'],
-      'application/msword': ['.doc'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
-      'application/vnd.ms-excel': ['.xls'],
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-      'text/csv': ['.csv'],
-      'text/plain': ['.txt'],
-    },
-    onDrop,
-  })
-
-  const handleShowUpload = () => setShowUpload((e) => !e)
-
-  const handleCopyToClipboard = (text: string) => {
-    copy(text)
-    setCopyPublicUrl(true)
-    enqueueSnackbar(`Document url has been copied to clipboard`, {
-      variant: 'success',
-      anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-    })
-  }
-
-  const handleOpenInNewTab = (url: string) => {
-    window.open(url, '_blank')
-  }
+  const mutateKey = '/collections'
 
   const handleClose = () => {
     setOpenDeleteDialog(false)
     setdeleteDialogData(null)
-    setCopyPublicUrl(false)
   }
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -148,9 +78,9 @@ const DocumentsPage = () => {
     }, 500)
   }
 
-  const handleDeleteDialog = (media: Media) => {
+  const handleDeleteDialog = (collection: Collection) => {
     setOpenDeleteDialog(true)
-    setdeleteDialogData(media)
+    setdeleteDialogData(collection)
   }
 
   const onDeleteHandler = async () => {
@@ -158,14 +88,14 @@ const DocumentsPage = () => {
       setDisable(true)
 
       axios
-        .delete(`/medias/${deleteDialogData?.id}`, {
+        .delete(`/collections/${deleteDialogData?.id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         })
         .then((res) => {
           mutate(mutateKey)
-          enqueueSnackbar(`Media has been deleted successfully`, {
+          enqueueSnackbar(`Collection has been deleted successfully`, {
             variant: 'success',
             anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
           })
@@ -183,19 +113,18 @@ const DocumentsPage = () => {
   }
 
   const addNewButton = (
-    <CustomButton variant="contained" disableElevation onClick={handleShowUpload}>
+    <CustomButton variant="contained" disableElevation>
       Add New
     </CustomButton>
   )
 
   const addNewButtonSkeleton = <Skeleton sx={{ width: '80px', height: '50px' }} />
 
-  const { data, error, isLoading } = useSWR<ListData<Media>>(
+  const { data, error, isLoading } = useSWR<ListData<Collection>>(
     mutateKey,
     () =>
       axios
-        .get('/medias', {
-          params: { filter: JSON.stringify([{ field: 'type', value: 'document', operator: '=' }]) },
+        .get('/collections', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -256,40 +185,6 @@ const DocumentsPage = () => {
     <PageContainer title={PageMeta.title} description={PageMeta.description}>
       <PageHeader title={PageMeta.title} breadcrumb={PageMeta.breadcrumb} image={PageMeta.image} />
 
-      <Fade in={showUpload}>
-        <Paper
-          elevation={0}
-          sx={{
-            width: '100%',
-            height: showUpload ? '200px' : 0,
-            opacity: showUpload ? 1 : 0,
-            mb: 3,
-            borderWidth: '2px',
-            borderStyle: 'dashed',
-            borderColor: 'grey.300',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer',
-            borderRadius: 3,
-          }}
-          {...getRootProps({ className: 'dropzone' })}
-        >
-          <input {...getInputProps()} />
-          <Image
-            src={'/images/other/upload.svg'}
-            alt="Upload"
-            width={150}
-            height={100}
-            style={{ opacity: showUpload ? 1 : 0 }}
-          ></Image>
-          <Typography sx={{ opacity: showUpload ? 1 : 0, mt: 2 }}>
-            Drag and drop some files here, or click to select file
-          </Typography>
-        </Paper>
-      </Fade>
-
       <DashboardCard
         headerAction={addNewButton}
         footer={data && data.meta.total > 0 ? pagination : undefined}
@@ -297,7 +192,7 @@ const DocumentsPage = () => {
         {data && data.meta.total > 0 ? (
           <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
             <Table
-              aria-label="documents table"
+              aria-label="collections table"
               sx={{
                 whiteSpace: 'nowrap',
                 mt: 2,
@@ -307,22 +202,22 @@ const DocumentsPage = () => {
                 <TableRow>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      File Name
+                      Name
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Size
+                      Status
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Uploaded by
+                      Owned by
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Uploaded at
+                      Created at
                     </Typography>
                   </TableCell>
                   <TableCell size="small" align="center">
@@ -333,56 +228,46 @@ const DocumentsPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data?.data.map((media) => (
-                  <TableRow key={media.id}>
+                {data?.data.map((collection) => (
+                  <TableRow key={collection.id}>
                     <TableCell>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {getFileNameFromUrl(media.url)}
+                        {collection.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight={600}
+                        sx={{ textTransform: 'capitalize' }}
+                      >
+                        {collection.status}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {prettyBytes(media.size)}
+                        {getSignedInUser()?.id === collection.user?.id
+                          ? 'You'
+                          : collection.user?.email}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {getSignedInUser()?.id === media.user?.id ? 'You' : media.user?.email}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        {moment(media.createdAt).format(
+                        {moment(collection.createdAt).format(
                           dateFormat?.value + ' ' + timeFormat?.value
                         )}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton
-                        color="success"
-                        aria-label="Copy URL"
-                        onClick={() => {
-                          handleCopyToClipboard(media.url)
-                        }}
-                      >
-                        <ContentCopy />
-                      </IconButton>
-
-                      <IconButton
-                        color="primary"
-                        aria-label="Download"
-                        onClick={() => {
-                          handleOpenInNewTab(media.url)
-                        }}
-                      >
-                        <DownloadOutlined />
+                      <IconButton color="primary" aria-label="Details">
+                        <IconPencil />
                       </IconButton>
 
                       <IconButton
                         color="error"
-                        aria-label="Delete file"
+                        aria-label="Delete collection"
                         onClick={() => {
-                          handleDeleteDialog(media)
+                          handleDeleteDialog(collection)
                         }}
                       >
                         <IconTrash />
@@ -394,7 +279,7 @@ const DocumentsPage = () => {
             </Table>
           </Box>
         ) : (
-          <Typography sx={{ textAlign: 'center' }}>No documents found</Typography>
+          <Typography sx={{ textAlign: 'center' }}>No collection found</Typography>
         )}
       </DashboardCard>
 
@@ -402,7 +287,7 @@ const DocumentsPage = () => {
         open={openDeleteDialog}
         onClose={handleClose}
         onDeleteHandler={onDeleteHandler}
-        itemToDelete={deleteDialogData ? getFileNameFromUrl(deleteDialogData.url) : 'this file'}
+        itemToDelete={deleteDialogData ? deleteDialogData.name : 'this collection'}
         disable={disable}
       />
 
@@ -416,4 +301,4 @@ const DocumentsPage = () => {
   )
 }
 
-export default DocumentsPage
+export default CollectionsPage

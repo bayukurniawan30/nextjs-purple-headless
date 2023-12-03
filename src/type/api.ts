@@ -59,3 +59,63 @@ export interface Media {
   createdAt?: string
   updatedAt?: string
 }
+
+export interface Field {
+  id: string
+  name: string
+  slug: string
+  additionalText: string
+  metadata?: Object
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface Collection {
+  id: string
+  name: string
+  slug: string
+  fields: Object
+  status: 'publish' | 'draft'
+  sorting: string
+  ordering: string
+  userId?: string
+  user?: User
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface CollectionItem {
+  id: string
+  slug: string
+  slugTarget: string
+  content: string
+  collectionId: string
+  collection: Collection
+  userId?: string
+  user?: User
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface Singleton {
+  id: string
+  name: string
+  slug: string
+  fields: Object
+  status: 'publish' | 'draft'
+  userId?: string
+  user?: User
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface SingletonItem {
+  id: string
+  content: string
+  singletonId: string
+  singleton: Singleton
+  userId?: string
+  user?: User
+  createdAt?: string
+  updatedAt?: string
+}
