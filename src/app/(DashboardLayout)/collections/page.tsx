@@ -40,7 +40,7 @@ const PageMeta: PageMeta = {
       href: '/collections',
     },
   ],
-  image: '/images/header/documents.svg',
+  image: '/images/header/collections.svg',
 }
 
 const CollectionsPage = () => {

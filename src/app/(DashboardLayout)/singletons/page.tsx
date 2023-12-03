@@ -40,7 +40,7 @@ const PageMeta: PageMeta = {
       href: '/singletons',
     },
   ],
-  image: '/images/header/documents.svg',
+  image: '/images/header/singletons.svg',
 }
 
 const SingletonsPage = () => {
