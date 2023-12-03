@@ -225,8 +225,8 @@ const DocumentsPage = () => {
         />
         <DashboardCard headerAction={addNewButtonSkeleton}>
           <Grid container spacing={2}>
-            {Array.from({ length: 5 }, (_, index) => (
-              <Grid item xs={5} sm={5} md={5} key={index}>
+            {Array.from({ length: 6 }, (_, index) => (
+              <Grid item xs={2} sm={2} md={2} key={index}>
                 <Skeleton sx={{ marginBottom: 1 }} />
                 <Skeleton sx={{ marginBottom: 1 }} />
                 <Skeleton />
