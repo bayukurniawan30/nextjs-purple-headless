@@ -260,9 +260,9 @@ const GeneralSettingsPage = () => {
         />
         <DashboardCard headerAction={addNewButtonSkeleton}>
           <Grid container spacing={2}>
-            {Array.from({ length: 4 }, (_, index) => (
-              <Grid item xs={3} key={index}>
-                <Skeleton sx={{ marginBottom: 1, height: '400px' }} />
+            {Array.from({ length: 6 }, (_, index) => (
+              <Grid item xs={2} md={6} key={index}>
+                <Skeleton sx={{ marginBottom: 1, height: '320px' }} />
               </Grid>
             ))}
           </Grid>
@@ -314,7 +314,7 @@ const GeneralSettingsPage = () => {
         {data && data.meta.total > 0 ? (
           <Grid container spacing={2}>
             {data.data.map((image) => (
-              <Grid item xs={2} md={4} key={image.id}>
+              <Grid item xs={2} md={6} key={image.id}>
                 <Image
                   src={image.publicThumbnailUrl}
                   alt={image.publicThumbnailUrl}
