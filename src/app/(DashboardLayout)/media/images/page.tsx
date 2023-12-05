@@ -601,7 +601,7 @@ const GeneralSettingsPage = () => {
 
       <DeleteDialog
         open={openDeleteDialog}
-        onClose={handleClose}
+        onClose={handleCloseDeteleDialog}
         onDeleteHandler={onDeleteHandler}
         itemToDelete={'this media'}
         disable={disable}
