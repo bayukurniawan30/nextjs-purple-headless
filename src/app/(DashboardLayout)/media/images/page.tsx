@@ -260,8 +260,8 @@ const GeneralSettingsPage = () => {
         />
         <DashboardCard headerAction={addNewButtonSkeleton}>
           <Grid container spacing={2}>
-            {Array.from({ length: 6 }, (_, index) => (
-              <Grid item xs={2} key={index}>
+            {Array.from({ length: 4 }, (_, index) => (
+              <Grid item xs={3} key={index}>
                 <Skeleton sx={{ marginBottom: 1, height: '400px' }} />
               </Grid>
             ))}
