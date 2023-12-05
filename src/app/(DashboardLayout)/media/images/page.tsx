@@ -290,6 +290,7 @@ const GeneralSettingsPage = () => {
             justifyContent: 'center',
             alignItems: 'center',
             cursor: 'pointer',
+            textAlign: 'center',
             borderRadius: 3,
           }}
           {...getRootProps({ className: 'dropzone' })}

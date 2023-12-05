@@ -37,7 +37,7 @@ const useFieldsStore: UseBoundStore<StoreApi<AvailableFieldsState>> =
         },
       }),
       {
-        name: 'settings-storage',
+        name: 'available-fields',
         storage: createJSONStorage(() => localStorage),
       }
     )
