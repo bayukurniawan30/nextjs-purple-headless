@@ -29,8 +29,8 @@ export const Upgrade = () => {
             Details
           </CustomButton>
         </Box>
-        <Box mt="-35px">
-          <Image alt="Remy Sharp" src={img1} width={100} />
+        <Box>
+          <Image alt="Github" src={img1} width={100} />
         </Box>
       </>
     </Box>
