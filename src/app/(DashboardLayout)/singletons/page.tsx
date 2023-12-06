@@ -27,6 +27,7 @@ import moment from 'moment'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import DeleteDialog from '../components/shared/DeleteDialog'
 import CustomSnackbar from '../components/forms/theme-elements/CustomSnackbar'
+import { useRouter } from 'next/navigation'
 
 const PageMeta: PageMeta = {
   title: 'Singletons',
@@ -44,6 +45,7 @@ const PageMeta: PageMeta = {
 }
 
 const SingletonsPage = () => {
+  const router = useRouter()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -114,7 +116,11 @@ const SingletonsPage = () => {
   }
 
   const addNewButton = (
-    <CustomButton variant="contained" disableElevation>
+    <CustomButton
+      variant="contained"
+      disableElevation
+      onClick={() => router.push('/singletons/create')}
+    >
       Add New
     </CustomButton>
   )
