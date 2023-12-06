@@ -154,8 +154,8 @@ const UsersPage = () => {
         />
         <DashboardCard title={PageMeta.title}>
           <Grid container spacing={2}>
-            {Array.from({ length: 3 }, (_, index) => (
-              <Grid item xs={4} key={index}>
+            {Array.from({ length: 4 }, (_, index) => (
+              <Grid item xs={3} md={3} key={index}>
                 <Skeleton sx={{ marginBottom: 1 }} />
                 <Skeleton sx={{ marginBottom: 1 }} />
                 <Skeleton />
