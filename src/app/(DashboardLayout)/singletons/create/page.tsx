@@ -71,7 +71,13 @@ const CreateSingletonPage = () => {
   const router = useRouter()
   const [disable, setDisable] = useState(false)
 
+  const addedFields = useAddedFields()
   const temporaryAddedFields = useAddedFields().fields
+
+  const handleDeleteField = (uniqueId: string) => {
+    addedFields.removeField(uniqueId)
+    console.log(`Deleting field with uniqueId: ${uniqueId}`)
+  }
   // const selectedFields = () => {
   //   return (
 
@@ -223,7 +229,10 @@ const CreateSingletonPage = () => {
             <Box height={20} />
             <DashboardCard headtitle="Fields" headerAction={addNewFieldButton} footer={footer}>
               <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
-                <SelectedFieldsList temporaryAddedFields={temporaryAddedFields} />
+                <SelectedFieldsList
+                  temporaryAddedFields={temporaryAddedFields}
+                  onDelete={handleDeleteField}
+                />
               </Box>
             </DashboardCard>
           </Grid>

@@ -19,9 +19,10 @@ import { TemporaryField } from '@/hooks/temporaryAddedFields'
 
 type Props = {
   temporaryAddedFields: TemporaryField[]
+  onDelete: (uniqueId: string) => void
 }
 
-const SelectedFieldsList = ({ temporaryAddedFields }: Props) => {
+const SelectedFieldsList = ({ temporaryAddedFields, onDelete }: Props) => {
   if (temporaryAddedFields.length > 0) {
     const getIconComponent = (fieldType: string) => {
       switch (fieldType) {
@@ -39,7 +40,7 @@ const SelectedFieldsList = ({ temporaryAddedFields }: Props) => {
           return IconLink
         case 'image':
           return IconPhoto
-        case 'code':
+        case 'code-editor':
           return IconCode
         case 'date-picker':
           return IconCalendarEvent
@@ -54,6 +55,11 @@ const SelectedFieldsList = ({ temporaryAddedFields }: Props) => {
       }
     }
 
+    const handleDelete = (uniqueId: string) => {
+      // Call the onDelete prop with the uniqueId
+      onDelete(uniqueId)
+    }
+
     return (
       <List>
         {temporaryAddedFields.map((field) => {
@@ -63,7 +69,11 @@ const SelectedFieldsList = ({ temporaryAddedFields }: Props) => {
             <ListItem
               key={field.uniqueId}
               secondaryAction={
-                <IconButton edge="end" aria-label="delete">
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => handleDelete(field.uniqueId)}
+                >
                   <IconTrash />
                 </IconButton>
               }
