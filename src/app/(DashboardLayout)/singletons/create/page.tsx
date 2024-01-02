@@ -7,6 +7,10 @@ import {
   FormControl,
   Grid,
   IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Select,
@@ -91,48 +95,23 @@ const CreateSingletonPage = () => {
   const showSelectedFields = () => {
     if (temporaryAddedFields.length > 0) {
       return (
-        <Table
-          aria-label="fields table"
-          sx={{
-            whiteSpace: 'nowrap',
-            mt: 2,
-          }}
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Field Type
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" align="center" fontWeight={600}>
-                  Action
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {temporaryAddedFields.map((field) => (
-              <TableRow key={field.uniqueId}>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    {field.name}
-                  </Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <IconButton color="primary" aria-label="Edit field">
-                    <IconPencil />
-                  </IconButton>
-
-                  <IconButton color="error" aria-label="Delete field">
-                    <IconTrash />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <List>
+          {temporaryAddedFields.map((field) => (
+            <ListItem
+              key={field.uniqueId}
+              secondaryAction={
+                <IconButton edge="end" aria-label="delete">
+                  <IconTrash />
+                </IconButton>
+              }
+            >
+              <ListItemIcon>
+                <IconPencil />
+              </ListItemIcon>
+              <ListItemText primary={field.name} />
+            </ListItem>
+          ))}
+        </List>
       )
     } else {
       return (
