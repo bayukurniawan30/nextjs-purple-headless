@@ -1,50 +1,50 @@
 export const FIELD_ICONS: { type: string; icon: string }[] = [
   {
     type: 'text-input',
-    icon: 'Pencil',
+    icon: 'IconPencil',
   },
   {
     type: 'textarea',
-    icon: 'Article',
+    icon: 'IconArticle',
   },
   {
     type: 'selectbox',
-    icon: 'Checklist',
+    icon: 'IconChecklist',
   },
   {
     type: 'password',
-    icon: 'Password',
+    icon: 'IconPassword',
   },
   {
     type: 'number',
-    icon: 'Money',
+    icon: 'IconSquareNumber1',
   },
   {
     type: 'link',
-    icon: 'Link',
+    icon: 'IconLink',
   },
   {
     type: 'image',
-    icon: 'Image',
+    icon: 'IconPhoto',
   },
   {
     type: 'code-editor',
-    icon: 'Code',
+    icon: 'IconCode',
   },
   {
     type: 'time-picker',
-    icon: 'AccessTime',
+    icon: 'IconClockEdit',
   },
   {
     type: 'date-picker',
-    icon: 'Event',
+    icon: 'IconCalendarEvent',
   },
   {
     type: 'color-picker',
-    icon: 'ColorLens',
+    icon: 'IconPalette',
   },
   {
     type: 'boolean',
-    icon: 'ToggleOn',
+    icon: 'IconToggleRight',
   },
 ]

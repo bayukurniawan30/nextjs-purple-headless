@@ -36,7 +36,21 @@ import { useRouter } from 'next/navigation'
 import CustomSelect from '../../components/forms/theme-elements/CustomSelect'
 import FieldOptionsMenu from '../../components/shared/FieldOptionsMenu'
 import { useAddedFields } from '@/hooks/temporaryAddedFields'
-import { IconPencil, IconTrash } from '@tabler/icons-react'
+import {
+  IconPencil,
+  IconTrash,
+  IconChecklist,
+  IconArticle,
+  IconPassword,
+  IconSquareNumber1,
+  IconLink,
+  IconPhoto,
+  IconCode,
+  IconClockEdit,
+  IconCalendarEvent,
+  IconPalette,
+  IconToggleRight,
+} from '@tabler/icons-react'
 import { FIELD_ICONS } from '@/const/fieldIcons'
 
 const PageMeta: PageMeta = {
@@ -100,6 +114,8 @@ const CreateSingletonPage = () => {
           {temporaryAddedFields.map((field) => {
             const matchingIcon = FIELD_ICONS.find((icon) => icon.type === field.slug)
 
+            const IconComponent = matchingIcon ? matchingIcon.icon : IconPencil
+
             return (
               <ListItem
                 key={field.uniqueId}
@@ -110,13 +126,7 @@ const CreateSingletonPage = () => {
                 }
               >
                 <ListItemIcon>
-                  {matchingIcon
-                    ? // Dynamically import the icon based on the icon name
-                      React.createElement(
-                        require(`@mui/icons-material/${matchingIcon.icon}`).default
-                      )
-                    : // If no matching icon is found, use the default IconPencil
-                      React.createElement(require('@mui/icons-material/Edit').default)}
+                  <IconComponent />
                 </ListItemIcon>
                 <ListItemText primary={field.name} />
               </ListItem>
