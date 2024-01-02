@@ -110,12 +110,13 @@ const CreateSingletonPage = () => {
                 }
               >
                 <ListItemIcon>
-                  {matchingIcon ? (
-                    // If a matching icon is found, use it; otherwise, use the default IconPencil
-                    React.createElement(matchingIcon.icon)
-                  ) : (
-                    <IconPencil />
-                  )}
+                  {matchingIcon
+                    ? // Dynamically import the icon based on the icon name
+                      React.createElement(
+                        require(`@mui/icons-material/${matchingIcon.icon}`).default
+                      )
+                    : // If no matching icon is found, use the default IconPencil
+                      React.createElement(require('@mui/icons-material/Edit').default)}
                 </ListItemIcon>
                 <ListItemText primary={field.name} />
               </ListItem>
