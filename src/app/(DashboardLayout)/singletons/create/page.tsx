@@ -37,6 +37,7 @@ import CustomSelect from '../../components/forms/theme-elements/CustomSelect'
 import FieldOptionsMenu from '../../components/shared/FieldOptionsMenu'
 import { useAddedFields } from '@/hooks/temporaryAddedFields'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
+import { FIELD_ICONS } from '@/const/fieldIcons'
 
 const PageMeta: PageMeta = {
   title: 'Create Singleton',
@@ -96,21 +97,30 @@ const CreateSingletonPage = () => {
     if (temporaryAddedFields.length > 0) {
       return (
         <List>
-          {temporaryAddedFields.map((field) => (
-            <ListItem
-              key={field.uniqueId}
-              secondaryAction={
-                <IconButton edge="end" aria-label="delete">
-                  <IconTrash />
-                </IconButton>
-              }
-            >
-              <ListItemIcon>
-                <IconPencil />
-              </ListItemIcon>
-              <ListItemText primary={field.name} />
-            </ListItem>
-          ))}
+          {temporaryAddedFields.map((field) => {
+            const matchingIcon = FIELD_ICONS.find((icon) => icon.type === field.slug)
+
+            return (
+              <ListItem
+                key={field.uniqueId}
+                secondaryAction={
+                  <IconButton edge="end" aria-label="delete">
+                    <IconTrash />
+                  </IconButton>
+                }
+              >
+                <ListItemIcon>
+                  {matchingIcon ? (
+                    // If a matching icon is found, use it; otherwise, use the default IconPencil
+                    React.createElement(matchingIcon.icon)
+                  ) : (
+                    <IconPencil />
+                  )}
+                </ListItemIcon>
+                <ListItemText primary={field.name} />
+              </ListItem>
+            )
+          })}
         </List>
       )
     } else {
