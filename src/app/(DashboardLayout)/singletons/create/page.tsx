@@ -36,22 +36,7 @@ import { useRouter } from 'next/navigation'
 import CustomSelect from '../../components/forms/theme-elements/CustomSelect'
 import FieldOptionsMenu from '../../components/shared/FieldOptionsMenu'
 import { useAddedFields } from '@/hooks/temporaryAddedFields'
-import {
-  IconPencil,
-  IconTrash,
-  IconChecklist,
-  IconArticle,
-  IconPassword,
-  IconSquareNumber1,
-  IconLink,
-  IconPhoto,
-  IconCode,
-  IconClockEdit,
-  IconCalendarEvent,
-  IconPalette,
-  IconToggleRight,
-} from '@tabler/icons-react'
-import { FIELD_ICONS } from '@/const/fieldIcons'
+import SelectedFieldsList from '../../components/shared/SelectedFieldsList'
 
 const PageMeta: PageMeta = {
   title: 'Create Singleton',
@@ -106,42 +91,6 @@ const CreateSingletonPage = () => {
   //     showEmptyField()
   //   }
   // }
-
-  const showSelectedFields = () => {
-    if (temporaryAddedFields.length > 0) {
-      return (
-        <List>
-          {temporaryAddedFields.map((field) => {
-            const matchingIcon = FIELD_ICONS.find((icon) => icon.type === field.slug)
-
-            const IconComponent = matchingIcon ? matchingIcon.icon : IconPencil
-
-            return (
-              <ListItem
-                key={field.uniqueId}
-                secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
-                    <IconTrash />
-                  </IconButton>
-                }
-              >
-                <ListItemIcon>
-                  <IconComponent />
-                </ListItemIcon>
-                <ListItemText primary={field.name} />
-              </ListItem>
-            )
-          })}
-        </List>
-      )
-    } else {
-      return (
-        <Typography sx={{ textAlign: 'center' }}>
-          Please add fields by clicking the button above
-        </Typography>
-      )
-    }
-  }
 
   const {
     control,
@@ -274,7 +223,7 @@ const CreateSingletonPage = () => {
             <Box height={20} />
             <DashboardCard headtitle="Fields" headerAction={addNewFieldButton} footer={footer}>
               <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
-                {showSelectedFields()}
+                <SelectedFieldsList temporaryAddedFields={temporaryAddedFields} />
               </Box>
             </DashboardCard>
           </Grid>

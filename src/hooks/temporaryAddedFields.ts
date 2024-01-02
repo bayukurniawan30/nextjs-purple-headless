@@ -1,7 +1,7 @@
 import { Field } from '@/type/api'
 import { create } from 'zustand'
 
-interface TemporaryField extends Field {
+export interface TemporaryField extends Field {
   page: 'singleton' | 'collection'
   uniqueId: string
 }
