@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { List, ListItem, ListItemIcon, ListItemText, IconButton, Typography } from '@mui/material'
 import {
   IconPencil,
@@ -14,8 +14,10 @@ import {
   IconCalendarEvent,
   IconPalette,
   IconToggleRight,
+  IconFileText,
 } from '@tabler/icons-react'
 import { TemporaryField } from '@/hooks/temporaryAddedFields'
+import UpdateFieldDialog from './UpdateFieldDialog'
 
 type Props = {
   temporaryAddedFields: TemporaryField[]
@@ -23,6 +25,15 @@ type Props = {
 }
 
 const SelectedFieldsList = ({ temporaryAddedFields, onDelete }: Props) => {
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
+  const [fieldData, setFieldData] = useState<TemporaryField | null>(null)
+  const [disable, setDisable] = useState(false)
+
+  const handleClose = () => {
+    setOpenDetailsDialog(false)
+    setFieldData(null)
+  }
+
   if (temporaryAddedFields.length > 0) {
     const getIconComponent = (fieldType: string) => {
       switch (fieldType) {
@@ -55,37 +66,60 @@ const SelectedFieldsList = ({ temporaryAddedFields, onDelete }: Props) => {
       }
     }
 
+    const handleOpenDetails = (field: TemporaryField) => {
+      setOpenDetailsDialog(true)
+      setFieldData(field)
+    }
+
     const handleDelete = (uniqueId: string) => {
       // Call the onDelete prop with the uniqueId
       onDelete(uniqueId)
     }
 
     return (
-      <List>
-        {temporaryAddedFields.map((field) => {
-          const IconComponent = getIconComponent(field.slug)
+      <div>
+        <List>
+          {temporaryAddedFields.map((field) => {
+            const IconComponent = getIconComponent(field.slug)
 
-          return (
-            <ListItem
-              key={field.uniqueId}
-              secondaryAction={
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={() => handleDelete(field.uniqueId)}
-                >
-                  <IconTrash />
-                </IconButton>
-              }
-            >
-              <ListItemIcon>
-                <IconComponent />
-              </ListItemIcon>
-              <ListItemText primary={field.name} />
-            </ListItem>
-          )
-        })}
-      </List>
+            return (
+              <ListItem
+                key={field.uniqueId}
+                secondaryAction={
+                  <div>
+                    <IconButton
+                      edge="end"
+                      aria-label="details"
+                      onClick={() => handleOpenDetails(field)}
+                    >
+                      <IconFileText />
+                    </IconButton>
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => handleDelete(field.uniqueId)}
+                    >
+                      <IconTrash />
+                    </IconButton>
+                  </div>
+                }
+              >
+                <ListItemIcon>
+                  <IconComponent />
+                </ListItemIcon>
+                <ListItemText primary={field.name} />
+              </ListItem>
+            )
+          })}
+        </List>
+        <UpdateFieldDialog
+          open={openDetailsDialog}
+          onClose={handleClose}
+          onSaveHandler={() => {}}
+          field={fieldData}
+          disable={disable}
+        ></UpdateFieldDialog>{' '}
+      </div>
     )
   } else {
     return (

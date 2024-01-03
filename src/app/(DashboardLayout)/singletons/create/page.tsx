@@ -50,13 +50,13 @@ const PageMeta: PageMeta = {
 interface FormData {
   name: string
   status: string
-  fields: any
+  // fields: any
 }
 
 const schema = yup.object().shape({
   name: yup.string().required(),
   status: yup.string().required(),
-  fields: yup.object().json(),
+  // fields: yup.object().json(),
 })
 
 const CreateSingletonPage = () => {
@@ -80,12 +80,11 @@ const CreateSingletonPage = () => {
     defaultValues: {
       name: '',
       status: 'draft',
-      fields: JSON.stringify(temporaryAddedFields),
+      // fields: JSON.stringify(temporaryAddedFields),
     },
   })
 
   const onSubmitHandler = async (values: FormData) => {
-    console.log('🚀 ~ file: page.tsx:88 ~ onSubmitHandler ~ values:', values)
     try {
       setDisable(true)
 
@@ -95,7 +94,7 @@ const CreateSingletonPage = () => {
           {
             name: values.name,
             status: values.status,
-            fields: values.fields,
+            fields: JSON.stringify(temporaryAddedFields),
           },
           {
             headers: {

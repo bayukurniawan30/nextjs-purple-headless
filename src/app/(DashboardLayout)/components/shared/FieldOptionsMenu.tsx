@@ -28,7 +28,7 @@ const FieldOptionsMenu = ({ page }: Props) => {
       )
     }
     const uniqueId = generateUniqueId()
-    useAddedFields.getState().addNewField({ ...field, page, uniqueId })
+    useAddedFields.getState().addNewField({ ...field, page, uniqueId, label: '', helperText: '' })
     handleCloseAddNewField()
   }
 
