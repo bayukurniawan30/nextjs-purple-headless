@@ -1,4 +1,4 @@
-import { TemporaryField } from '@/hooks/temporaryAddedFields'
+import { TemporaryField, useAddedFields } from '@/hooks/temporaryAddedFields'
 import {
   Box,
   Button,
@@ -10,13 +10,14 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import CustomTextField from '../forms/theme-elements/CustomTextField'
 import humanizeString from 'humanize-string'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import CustomButton from './CustomButton'
+import { enqueueSnackbar } from 'notistack'
 
 interface FormData {
   label: string
@@ -26,19 +27,22 @@ interface FormData {
 
 const schema = yup.object().shape({
   label: yup.string().required(),
-  helperText: yup.string().required(),
+  helperText: yup.string().default(''),
   metadata: yup.string().required(),
 })
 
 interface Props {
   open: boolean
   onClose: () => void
-  onSaveHandler: () => void
+  onSaveHandler: (submitted: boolean) => void
   field: TemporaryField | null
   disable: boolean
 }
 
 const UpdateFieldDialog = ({ open, onClose, onSaveHandler, field, disable }: Props) => {
+  const [disableSave, setDisableSave] = useState(false)
+  const addedFields = useAddedFields()
+
   const {
     control,
     handleSubmit,
@@ -59,10 +63,29 @@ const UpdateFieldDialog = ({ open, onClose, onSaveHandler, field, disable }: Pro
     setValue('metadata', field ? JSON.stringify(field.metadata, null, 2) : '')
   }, [field])
 
+  const onSubmitFieldHandler = (values: FormData) => {
+    setDisableSave(true)
+
+    const data = { ...field, ...values } as TemporaryField
+    data.metadata = JSON.parse(values.metadata)
+
+    setTimeout(() => {
+      setDisableSave(false)
+      addedFields.updateField(data)
+
+      enqueueSnackbar(`Field details has been updated successfully`, {
+        variant: 'success',
+        anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
+      })
+
+      onSaveHandler(true)
+    }, 500)
+  }
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{field?.name} Field Details</DialogTitle>
-      <form>
+      <form onSubmit={handleSubmit(onSubmitFieldHandler)}>
         <DialogContent dividers sx={{ width: { xs: '280px', sm: '500px' } }}>
           <Stack>
             <Box mb={2}>
@@ -180,13 +203,13 @@ const UpdateFieldDialog = ({ open, onClose, onSaveHandler, field, disable }: Pro
           }}
         >
           <Button onClick={onClose}>Cancel</Button>
-          <CustomButton variant="contained" disableElevation onClick={onSaveHandler}>
+          <CustomButton variant="contained" disableElevation disabled={disableSave} type="submit">
             Save
           </CustomButton>
           <CircularProgress
             color="error"
             size={24}
-            sx={{ marginLeft: 2, display: disable ? 'block' : 'none' }}
+            sx={{ marginLeft: 2, display: disableSave ? 'block' : 'none' }}
           />
         </DialogActions>
       </form>

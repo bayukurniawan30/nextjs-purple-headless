@@ -1,5 +1,5 @@
 'use client'
-import PageHeader, { PageMeta } from '../../components/shared/PageHeader'
+import PageHeader, { PageMeta } from '../../../components/shared/PageHeader'
 import React, { useEffect, useState } from 'react'
 import {
   Box,
@@ -11,41 +11,25 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import CustomButton from '../../components/shared/CustomButton'
-import PageContainer from '../../components/container/PageContainer'
+import CustomButton from '../../../components/shared/CustomButton'
+import PageContainer from '../../../components/container/PageContainer'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import axios from '@/lib/axios'
 import { yupResolver } from '@hookform/resolvers/yup'
-import DashboardCard from '../../components/shared/DashboardCard'
-import CustomTextField from '../../components/forms/theme-elements/CustomTextField'
+import DashboardCard from '../../../components/shared/DashboardCard'
+import CustomTextField from '../../../components/forms/theme-elements/CustomTextField'
 import humanizeString from 'humanize-string'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
-import CustomSnackbar from '../../components/forms/theme-elements/CustomSnackbar'
+import CustomSnackbar from '../../../components/forms/theme-elements/CustomSnackbar'
 import { useRouter } from 'next/navigation'
-import CustomSelect from '../../components/forms/theme-elements/CustomSelect'
-import FieldOptionsMenu from '../../components/shared/FieldOptionsMenu'
-import { useAddedFields } from '@/hooks/temporaryAddedFields'
-import SelectedFieldsList from '../../components/shared/SelectedFieldsList'
-
-const PageMeta: PageMeta = {
-  title: 'Create Singleton',
-  description: 'Create new singleton',
-  breadcrumb: [
-    {
-      text: 'Content',
-    },
-    {
-      text: 'Singletons',
-      href: '/singletons',
-    },
-    {
-      text: 'Create',
-      href: '/singletons/create',
-    },
-  ],
-  image: '/images/header/singletons.svg',
-}
+import CustomSelect from '../../../components/forms/theme-elements/CustomSelect'
+import FieldOptionsMenu from '../../../components/shared/FieldOptionsMenu'
+import { TemporaryField, useAddedFields } from '@/hooks/temporaryAddedFields'
+import SelectedFieldsList from '../../../components/shared/SelectedFieldsList'
+import useSWR from 'swr'
+import { FieldSchema, Singleton } from '@/type/api'
+import { useFieldsStore } from '@/hooks/availableFields'
 
 interface FormSingletonData {
   name: string
@@ -59,16 +43,45 @@ const singletonSchema = yup.object().shape({
   // fields: yup.object().json(),
 })
 
-const CreateSingletonPage = () => {
+const EditSingletonPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter()
   const [disable, setDisable] = useState(false)
 
+  const PageMeta: PageMeta = {
+    title: 'Edit Singleton',
+    description: 'Edit existing singleton',
+    breadcrumb: [
+      {
+        text: 'Content',
+      },
+      {
+        text: 'Singletons',
+        href: '/singletons',
+      },
+      {
+        text: 'Edit',
+        href: `/singletons/edit/${params.id}`,
+      },
+    ],
+    image: '/images/header/singletons.svg',
+  }
+
   const addedFields = useAddedFields()
   const temporaryAddedFields = useAddedFields().fields
+  const availableFields = useFieldsStore.getState().fields
 
-  useEffect(() => {
-    addedFields.clearAll()
-  }, [])
+  const { data, error, isLoading } = useSWR<Singleton>(`/singletons/${params.id}`, () =>
+    axios
+      .get(`/singletons/${params.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .then((res) => {
+        return res.data
+      })
+      .catch((err) => err)
+  )
 
   const handleDeleteField = (uniqueId: string) => {
     addedFields.removeField(uniqueId)
@@ -77,23 +90,56 @@ const CreateSingletonPage = () => {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormSingletonData>({
     resolver: yupResolver(singletonSchema),
     defaultValues: {
-      name: '',
-      status: 'draft',
+      name: data?.name || '',
+      status: data?.status || 'draft',
       // fields: JSON.stringify(temporaryAddedFields),
     },
   })
+
+  useEffect(() => {
+    addedFields.clearAll()
+
+    setValue('name', data?.name || '')
+    setValue('status', data?.status || 'draft')
+
+    setTimeout(() => {
+      data?.fields.map((field: FieldSchema) => {
+        // find id in availableFields
+        const availableField = availableFields.find((f) => f.id === field.id)
+        if (availableField) {
+          const generateUniqueId = () => {
+            return (
+              Math.random().toString(36).substring(2, 15) +
+              Math.random().toString(36).substring(2, 15)
+            )
+          }
+          const uniqueId = generateUniqueId()
+
+          addedFields.addNewField({
+            ...availableField,
+            id: field.id,
+            uniqueId,
+            label: field.label,
+            helperText: field.helperText,
+            metadata: field.metadata,
+          } as TemporaryField)
+        }
+      })
+    }, 500)
+  }, [data])
 
   const onSubmitHandler = async (values: FormSingletonData) => {
     try {
       setDisable(true)
 
       axios
-        .post(
-          `/singletons`,
+        .put(
+          `/singletons/${params.id}`,
           {
             name: values.name,
             status: values.status,
@@ -106,8 +152,8 @@ const CreateSingletonPage = () => {
           }
         )
         .then((res) => {
-          if (res.status === 201) {
-            enqueueSnackbar(`New singleton has been created successfully`, {
+          if (res.status === 200) {
+            enqueueSnackbar(`Singleton has been updated successfully`, {
               variant: 'success',
               anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
             })
@@ -118,7 +164,7 @@ const CreateSingletonPage = () => {
             }, 1000)
           } else {
             setDisable(false)
-            enqueueSnackbar(`Failed to create new singleton. Please try again`, {
+            enqueueSnackbar(`Failed to update existng singleton. Please try again`, {
               variant: 'error',
               anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
             })
@@ -286,4 +332,4 @@ const CreateSingletonPage = () => {
   )
 }
 
-export default CreateSingletonPage
+export default EditSingletonPage

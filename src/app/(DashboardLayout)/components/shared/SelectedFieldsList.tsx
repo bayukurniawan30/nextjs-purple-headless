@@ -34,6 +34,10 @@ const SelectedFieldsList = ({ temporaryAddedFields, onDelete }: Props) => {
     setFieldData(null)
   }
 
+  const handleFieldDetailsSubmitted = (submitted: boolean) => {
+    setOpenDetailsDialog(submitted ? false : true)
+  }
+
   if (temporaryAddedFields.length > 0) {
     const getIconComponent = (fieldType: string) => {
       switch (fieldType) {
@@ -88,6 +92,7 @@ const SelectedFieldsList = ({ temporaryAddedFields, onDelete }: Props) => {
                 secondaryAction={
                   <div>
                     <IconButton
+                      sx={{ marginRight: '6px' }}
                       edge="end"
                       aria-label="details"
                       onClick={() => handleOpenDetails(field)}
@@ -107,7 +112,7 @@ const SelectedFieldsList = ({ temporaryAddedFields, onDelete }: Props) => {
                 <ListItemIcon>
                   <IconComponent />
                 </ListItemIcon>
-                <ListItemText primary={field.name} />
+                <ListItemText primary={field.name} secondary={field.label} />
               </ListItem>
             )
           })}
@@ -115,7 +120,7 @@ const SelectedFieldsList = ({ temporaryAddedFields, onDelete }: Props) => {
         <UpdateFieldDialog
           open={openDetailsDialog}
           onClose={handleClose}
-          onSaveHandler={() => {}}
+          onSaveHandler={handleFieldDetailsSubmitted}
           field={fieldData}
           disable={disable}
         ></UpdateFieldDialog>{' '}

@@ -96,6 +96,7 @@ const CreateUserPage = () => {
               router.push('/settings/users')
             }, 1000)
           } else {
+            setDisable(false)
             enqueueSnackbar(`Failed to create new user. Please try again`, {
               variant: 'error',
               anchorOrigin: { horizontal: 'right', vertical: 'bottom' },

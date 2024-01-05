@@ -89,7 +89,6 @@ const EditUserPage = ({ params }: { params: { id: string } }) => {
   }, [data])
 
   const onSubmitHandler = async (values: FormData) => {
-    console.log('🚀 ~ file: page.tsx:90 ~ onSubmitHandler ~ values:', values)
     try {
       setDisable(true)
 
@@ -119,6 +118,7 @@ const EditUserPage = ({ params }: { params: { id: string } }) => {
               router.push('/settings/users')
             }, 1000)
           } else {
+            setDisable(false)
             enqueueSnackbar(`Failed to edit existng user. Please try again`, {
               variant: 'error',
               anchorOrigin: { horizontal: 'right', vertical: 'bottom' },

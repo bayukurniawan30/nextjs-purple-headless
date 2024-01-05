@@ -101,7 +101,7 @@ export interface Singleton {
   id: string
   name: string
   slug: string
-  fields: Object
+  fields: FieldSchema[]
   status: 'publish' | 'draft'
   userId?: string
   user?: User
@@ -118,4 +118,11 @@ export interface SingletonItem {
   user?: User
   createdAt?: string
   updatedAt?: string
+}
+
+export interface FieldSchema {
+  id: string
+  label: string
+  helperText: string
+  metadata: Object
 }

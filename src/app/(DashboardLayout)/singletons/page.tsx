@@ -34,7 +34,7 @@ const PageMeta: PageMeta = {
   description: 'Create a singleton of data for your website and app',
   breadcrumb: [
     {
-      text: 'Singletons',
+      text: 'Content',
     },
     {
       text: 'Singletons',
@@ -81,6 +81,10 @@ const SingletonsPage = () => {
     }, 500)
   }
 
+  const handleGotoEdit = (singleton: Singleton) => {
+    router.push(`/singletons/edit/${singleton.id}`)
+  }
+
   const handleDeleteDialog = (singleton: Singleton) => {
     setOpenDeleteDialog(true)
     setdeleteDialogData(singleton)
@@ -103,6 +107,7 @@ const SingletonsPage = () => {
             anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
           })
           setOpenDeleteDialog(false)
+          setDisable(false)
           return res.data
         })
         .catch((err) => {
@@ -127,7 +132,7 @@ const SingletonsPage = () => {
 
   const addNewButtonSkeleton = <Skeleton sx={{ width: '80px', height: '50px' }} />
 
-  const { data, error, isLoading } = useSWR<ListData<Collection>>(
+  const { data, error, isLoading } = useSWR<ListData<Singleton>>(
     mutateKey,
     () =>
       axios
@@ -236,35 +241,41 @@ const SingletonsPage = () => {
                 {data?.data.map((singleton) => (
                   <TableRow key={singleton.id}>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {singleton.name}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography
                         variant="subtitle2"
-                        fontWeight={600}
+                        fontWeight={400}
                         sx={{ textTransform: 'capitalize' }}
                       >
                         {singleton.status}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {getSignedInUser()?.id === singleton.user?.id
                           ? 'You'
                           : singleton.user?.email}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {moment(singleton.createdAt).format(
                           dateFormat?.value + ' ' + timeFormat?.value
                         )}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton color="primary" aria-label="Details">
+                      <IconButton
+                        color="primary"
+                        aria-label="Details"
+                        onClick={() => {
+                          handleGotoEdit(singleton)
+                        }}
+                      >
                         <IconPencil />
                       </IconButton>
 

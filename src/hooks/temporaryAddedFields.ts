@@ -14,6 +14,7 @@ interface AddedFieldsState {
   addNewField: (field: TemporaryField) => void
   updateField: (field: TemporaryField) => void
   removeField: (id: string) => void
+  clearAll: () => void
 }
 
 const useAddedFields = create<AddedFieldsState>()((set) => ({
@@ -31,6 +32,11 @@ const useAddedFields = create<AddedFieldsState>()((set) => ({
   removeField: (id: string) => {
     set((state) => ({
       fields: state.fields.filter((field) => field.uniqueId !== id),
+    }))
+  },
+  clearAll: () => {
+    set((state) => ({
+      fields: [],
     }))
   },
 }))
