@@ -27,13 +27,14 @@ import moment from 'moment'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import DeleteDialog from '../components/shared/DeleteDialog'
 import CustomSnackbar from '../components/forms/theme-elements/CustomSnackbar'
+import { useRouter } from 'next/navigation'
 
 const PageMeta: PageMeta = {
   title: 'Collections',
   description: 'Create a collection of data for your website and app',
   breadcrumb: [
     {
-      text: 'Collections',
+      text: 'Content',
     },
     {
       text: 'Collections',
@@ -44,6 +45,7 @@ const PageMeta: PageMeta = {
 }
 
 const CollectionsPage = () => {
+  const router = useRouter()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -77,6 +79,10 @@ const CollectionsPage = () => {
     setTimeout(() => {
       mutate(mutateKey)
     }, 500)
+  }
+
+  const handleGotoEdit = (collection: Collection) => {
+    router.push(`/collections/edit/${collection.id}`)
   }
 
   const handleDeleteDialog = (collection: Collection) => {
@@ -114,7 +120,11 @@ const CollectionsPage = () => {
   }
 
   const addNewButton = (
-    <CustomButton variant="contained" disableElevation>
+    <CustomButton
+      variant="contained"
+      disableElevation
+      onClick={() => router.push('/collections/create')}
+    >
       Add New
     </CustomButton>
   )
@@ -230,35 +240,41 @@ const CollectionsPage = () => {
                 {data?.data.map((collection) => (
                   <TableRow key={collection.id}>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {collection.name}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography
                         variant="subtitle2"
-                        fontWeight={600}
+                        fontWeight={400}
                         sx={{ textTransform: 'capitalize' }}
                       >
                         {collection.status}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {getSignedInUser()?.id === collection.user?.id
                           ? 'You'
                           : collection.user?.email}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {moment(collection.createdAt).format(
                           dateFormat?.value + ' ' + timeFormat?.value
                         )}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton color="primary" aria-label="Details">
+                      <IconButton
+                        color="primary"
+                        aria-label="Details"
+                        onClick={() => {
+                          handleGotoEdit(collection)
+                        }}
+                      >
                         <IconPencil />
                       </IconButton>
 

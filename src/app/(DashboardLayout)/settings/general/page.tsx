@@ -225,12 +225,12 @@ const GeneralSettingsPage = () => {
               {data?.data.map((setting) => (
                 <TableRow key={setting.key}>
                   <TableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
+                    <Typography variant="subtitle2" fontWeight={400}>
                       {humanizeString(setting.key)}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
+                    <Typography variant="subtitle2" fontWeight={400}>
                       {(() => {
                         switch (setting.key) {
                           case 'date-format':

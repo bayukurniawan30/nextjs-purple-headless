@@ -334,22 +334,22 @@ const DocumentsPage = () => {
                 {data?.data.map((media) => (
                   <TableRow key={media.id}>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {getFileNameFromUrl(media.url)}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {prettyBytes(media.size)}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {getSignedInUser()?.id === media.user?.id ? 'You' : media.user?.email}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {moment(media.createdAt).format(
                           dateFormat?.value + ' ' + timeFormat?.value
                         )}

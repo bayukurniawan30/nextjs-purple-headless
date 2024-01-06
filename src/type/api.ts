@@ -74,7 +74,7 @@ export interface Collection {
   id: string
   name: string
   slug: string
-  fields: Object
+  fields: FieldSchema[]
   status: 'publish' | 'draft'
   sorting: string
   ordering: string

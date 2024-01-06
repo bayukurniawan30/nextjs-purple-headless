@@ -230,17 +230,17 @@ const UsersPage = () => {
                 {data?.data.map((user) => (
                   <TableRow key={user.email}>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {user.profile.fullName}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {user.email}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Typography variant="subtitle2" fontWeight={600}>
+                      <Typography variant="subtitle2" fontWeight={400}>
                         {user.isAdmin ? <IconCheck /> : null}
                       </Typography>
                     </TableCell>
