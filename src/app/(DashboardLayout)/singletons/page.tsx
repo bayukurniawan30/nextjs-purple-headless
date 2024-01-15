@@ -24,7 +24,7 @@ import PageHeader, { PageMeta } from '../components/shared/PageHeader'
 import DashboardCard from '../components/shared/DashboardCard'
 import getSignedInUser from '@/utils/getSignedInUser'
 import moment from 'moment'
-import { IconPencil, IconTrash } from '@tabler/icons-react'
+import { IconFileText, IconPencil, IconTrash } from '@tabler/icons-react'
 import DeleteDialog from '../components/shared/DeleteDialog'
 import CustomSnackbar from '../components/forms/theme-elements/CustomSnackbar'
 import { useRouter } from 'next/navigation'
@@ -83,6 +83,10 @@ const SingletonsPage = () => {
 
   const handleGotoEdit = (singleton: Singleton) => {
     router.push(`/singletons/edit/${singleton.id}`)
+  }
+
+  const handleGotoItem = (singleton: Singleton) => {
+    router.push(`/singletons/item/${singleton.id}`)
   }
 
   const handleDeleteDialog = (singleton: Singleton) => {
@@ -277,6 +281,16 @@ const SingletonsPage = () => {
                         }}
                       >
                         <IconPencil />
+                      </IconButton>
+
+                      <IconButton
+                        color="primary"
+                        aria-label="Item"
+                        onClick={() => {
+                          handleGotoItem(singleton)
+                        }}
+                      >
+                        <IconFileText />
                       </IconButton>
 
                       <IconButton

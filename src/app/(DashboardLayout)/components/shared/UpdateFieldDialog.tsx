@@ -28,7 +28,7 @@ interface FormData {
 const schema = yup.object().shape({
   label: yup.string().required(),
   helperText: yup.string().default(''),
-  metadata: yup.string().required(),
+  metadata: yup.string().default(null),
 })
 
 interface Props {
@@ -53,21 +53,21 @@ const UpdateFieldDialog = ({ open, onClose, onSaveHandler, field, disable }: Pro
     defaultValues: {
       label: field?.label ?? '',
       helperText: field?.helperText ?? '',
-      metadata: field ? JSON.stringify(field.metadata, null, 2) : '',
+      metadata: field && field.metadata ? JSON.stringify(field.metadata, null, 2) : '',
     },
   })
 
   useEffect(() => {
     setValue('label', field?.label ?? '')
     setValue('helperText', field?.helperText ?? '')
-    setValue('metadata', field ? JSON.stringify(field.metadata, null, 2) : '')
+    setValue('metadata', field && field.metadata ? JSON.stringify(field.metadata, null, 2) : '')
   }, [field])
 
   const onSubmitFieldHandler = (values: FormData) => {
     setDisableSave(true)
 
     const data = { ...field, ...values } as TemporaryField
-    data.metadata = JSON.parse(values.metadata)
+    data.metadata = values.metadata ? JSON.parse(values.metadata) : null
 
     setTimeout(() => {
       setDisableSave(false)

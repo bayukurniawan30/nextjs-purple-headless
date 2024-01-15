@@ -65,7 +65,7 @@ export interface Field {
   name: string
   slug: string
   additionalText: string
-  metadata?: Object
+  metadata?: any
   createdAt?: string
   updatedAt?: string
 }
@@ -120,8 +120,13 @@ export interface SingletonItem {
   updatedAt?: string
 }
 
+export interface SingletonWithItem extends Singleton {
+  singletonItem: SingletonItem
+}
+
 export interface FieldSchema {
   id: string
+  uniqueId?: string
   label: string
   helperText: string
   metadata: Object
