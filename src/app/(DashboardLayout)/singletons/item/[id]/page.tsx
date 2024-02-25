@@ -45,6 +45,7 @@ import DatePickerField from '@/app/(DashboardLayout)/components/forms/field-sche
 import TimePickerField from '@/app/(DashboardLayout)/components/forms/field-schemas/TImePickerField'
 import { enqueueSnackbar } from 'notistack'
 import moment from 'moment'
+import ColorPickerField from '@/app/(DashboardLayout)/components/forms/field-schemas/ColorPickerField'
 
 interface DynamicForm {
   [key: string]: yup.StringSchema | yup.NumberSchema // Define other schema types as needed
@@ -253,6 +254,20 @@ const SingletonItemPage = ({ params }: { params: { id: string } }) => {
                     case 'text-input':
                     case 'number':
                       fieldComponent = (
+                        <TextInputField
+                          key={fieldData.uniqueId}
+                          name={fieldData.uniqueId}
+                          label={fieldData.label}
+                          helperText={fieldData.helperText}
+                          control={control}
+                          errors={errors}
+                          inputProps={fieldData.metadata}
+                        ></TextInputField>
+                      )
+                      break
+
+                    case 'textarea':
+                      fieldComponent = (
                         <TextareaField
                           key={fieldData.uniqueId}
                           name={fieldData.uniqueId}
@@ -265,7 +280,7 @@ const SingletonItemPage = ({ params }: { params: { id: string } }) => {
                       )
                       break
 
-                    case 'textarea':
+                    case 'link':
                       fieldComponent = (
                         <TextInputField
                           key={fieldData.uniqueId}
@@ -354,6 +369,20 @@ const SingletonItemPage = ({ params }: { params: { id: string } }) => {
                             setValue(key, time)
                           }}
                         ></TimePickerField>
+                      )
+                      break
+
+                    case 'color-picker':
+                      fieldComponent = (
+                        <ColorPickerField
+                          key={fieldData.uniqueId}
+                          name={fieldData.uniqueId}
+                          label={fieldData.label}
+                          helperText={fieldData.helperText}
+                          control={control}
+                          errors={errors}
+                          inputProps={fieldData.metadata}
+                        ></ColorPickerField>
                       )
                       break
 

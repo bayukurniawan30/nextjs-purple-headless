@@ -18,5 +18,6 @@ export interface FieldProps {
   helperText?: string
   required?: boolean
   inputProps?: any
+  typeUrl?: boolean
   onChange?: (key: string, value: any) => void
 }

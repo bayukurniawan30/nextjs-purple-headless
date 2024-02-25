@@ -12,6 +12,7 @@ const TextInputField = ({
   helperText,
   required,
   inputProps,
+  typeUrl = false,
 }: FieldProps) => {
   return (
     <Box key={name} mb={2}>
@@ -28,6 +29,7 @@ const TextInputField = ({
             helperText={helperText}
             inputProps={inputProps}
             error={errors[name] ? true : false}
+            type={typeUrl ? 'url' : 'text'}
             {...field}
           />
         )}
