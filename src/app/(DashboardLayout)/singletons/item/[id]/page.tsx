@@ -349,6 +349,10 @@ const SingletonItemPage = ({ params }: { params: { id: string } }) => {
                           control={control}
                           errors={errors}
                           inputProps={fieldData.metadata}
+                          onChange={(key, value) => {
+                            const time = moment(value).format(fieldData.metadata.format)
+                            setValue(key, time)
+                          }}
                         ></TimePickerField>
                       )
                       break

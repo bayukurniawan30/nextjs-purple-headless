@@ -1,6 +1,5 @@
 import { Box, Typography } from '@mui/material'
 import { Control, Controller, FieldErrors } from 'react-hook-form'
-import CustomTextField from '../theme-elements/CustomTextField'
 import humanizeString from 'humanize-string'
 import { FieldProps } from '@/type/field'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
@@ -15,7 +14,10 @@ const TimePickerField = ({
   helperText,
   required,
   inputProps,
+  onChange,
 }: FieldProps) => {
+  const [value, setValue] = useState<string>()
+
   return (
     <Box mb={2}>
       <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor={name} mb="5px">
@@ -35,6 +37,11 @@ const TimePickerField = ({
                 },
               }}
               {...field}
+              onChange={(value: any) => {
+                onChange?.(name, value)
+                setValue(value)
+              }}
+              value={value}
             />
           </LocalizationProvider>
         )}
