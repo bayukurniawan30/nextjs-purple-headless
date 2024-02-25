@@ -24,7 +24,10 @@ const BooleanField = ({
         render={({ field }) => (
           <>
             <FormGroup>
-              <FormControlLabel control={<Switch {...field} />} label={label} />
+              <FormControlLabel
+                control={<Switch {...field} value={field.value ? 1 : 0} />}
+                label={label}
+              />
             </FormGroup>
             {helperText && (
               <FormHelperText sx={{ marginLeft: '14px' }}>{helperText}</FormHelperText>
