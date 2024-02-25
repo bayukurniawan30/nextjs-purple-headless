@@ -5,6 +5,7 @@ import humanizeString from 'humanize-string'
 import { FieldProps } from '@/type/field'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { useState } from 'react'
 
 const TimePickerField = ({
   name,
@@ -27,13 +28,13 @@ const TimePickerField = ({
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <TimePicker
               format={inputProps?.format}
-              name={name}
               slotProps={{
                 textField: {
                   fullWidth: true,
                   helperText: helperText,
                 },
               }}
+              {...field}
             />
           </LocalizationProvider>
         )}

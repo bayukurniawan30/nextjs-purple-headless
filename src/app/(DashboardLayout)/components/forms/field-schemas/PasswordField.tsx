@@ -40,9 +40,10 @@ const PasswordField = ({
         render={({ field }) => (
           <>
             <OutlinedInput
-              id={'field' + name}
+              id={'field-' + name}
               type={showPassword ? 'text' : 'password'}
               fullWidth
+              {...field}
               endAdornment={
                 <InputAdornment position="end">
                   <Tooltip title={'Show/Hide ' + label}>
