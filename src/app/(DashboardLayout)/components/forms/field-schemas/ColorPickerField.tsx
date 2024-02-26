@@ -57,7 +57,6 @@ const ColorPickerField = ({
                 })
               }
               {...field}
-              value={colorPicker.colorHex}
             />
             <SketchPicker color={colorPicker.color} onChange={handleChange} />
           </>
