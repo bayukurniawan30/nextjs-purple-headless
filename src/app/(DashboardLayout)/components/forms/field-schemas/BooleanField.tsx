@@ -25,7 +25,7 @@ const BooleanField = ({
           <>
             <FormGroup>
               <FormControlLabel
-                control={<Switch {...field} value={field.value ? 1 : 0} />}
+                control={<Switch {...field} defaultChecked={false} />}
                 label={label}
               />
             </FormGroup>
