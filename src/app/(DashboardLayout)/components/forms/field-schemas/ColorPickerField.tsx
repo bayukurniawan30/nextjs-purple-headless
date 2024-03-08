@@ -1,10 +1,12 @@
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, InputAdornment, OutlinedInput, Tooltip, Typography } from '@mui/material'
 import { Control, Controller, FieldErrors } from 'react-hook-form'
 import CustomTextField from '../theme-elements/CustomTextField'
 import humanizeString from 'humanize-string'
 import { FieldProps } from '@/type/field'
 import { useState } from 'react'
 import { Color, ColorResult, RGBColor, SketchPicker } from 'react-color'
+import CustomButton from '../../shared/CustomButton'
+import { ColorLens } from '@mui/icons-material'
 
 const ColorPickerField = ({
   name,
@@ -15,6 +17,7 @@ const ColorPickerField = ({
   required,
   inputProps,
 }: FieldProps) => {
+  const [displayColorPicker, setDisplayColorPicker] = useState(false)
   const [colorPicker, setColorPicker] = useState({
     displayColorPicker: false,
     color: {
@@ -34,6 +37,10 @@ const ColorPickerField = ({
     })
   }
 
+  const handleMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+  }
+
   return (
     <Box key={name} mb={2}>
       <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor={name} mb="5px">
@@ -44,21 +51,43 @@ const ColorPickerField = ({
         control={control}
         render={({ field }) => (
           <>
-            <CustomTextField
-              variant="outlined"
+            <OutlinedInput
+              id={'field-' + name}
+              type={'text'}
               fullWidth
-              helperText={helperText}
-              inputProps={inputProps}
-              error={errors[name] ? true : false}
-              onClick={() =>
-                setColorPicker({
-                  ...colorPicker,
-                  displayColorPicker: !colorPicker.displayColorPicker,
-                })
-              }
               {...field}
+              value={colorPicker.colorHex}
+              endAdornment={
+                <InputAdornment position="end">
+                  <Tooltip title={'Show/Hide color picker'}>
+                    <IconButton
+                      aria-label={'Show/Hide color picker'}
+                      edge="end"
+                      onClick={() => {
+                        setDisplayColorPicker(!displayColorPicker)
+                        setColorPicker({
+                          ...colorPicker,
+                          displayColorPicker: !colorPicker.displayColorPicker,
+                        })
+                      }}
+                      onMouseDown={handleMouseDown}
+                    >
+                      <ColorLens />
+                    </IconButton>
+                  </Tooltip>
+                </InputAdornment>
+              }
             />
-            <SketchPicker color={colorPicker.color} onChange={handleChange} />
+            {displayColorPicker && (
+              <div
+                style={{
+                  position: 'absolute',
+                  zIndex: 2,
+                }}
+              >
+                <SketchPicker color={colorPicker.color} onChange={handleChange} />
+              </div>
+            )}
           </>
         )}
       />

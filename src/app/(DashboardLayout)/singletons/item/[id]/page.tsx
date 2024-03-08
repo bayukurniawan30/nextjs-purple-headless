@@ -382,6 +382,9 @@ const SingletonItemPage = ({ params }: { params: { id: string } }) => {
                           control={control}
                           errors={errors}
                           inputProps={fieldData.metadata}
+                          onChange={(key, value) => {
+                            setValue(key, value)
+                          }}
                         ></ColorPickerField>
                       )
                       break
