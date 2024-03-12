@@ -16,7 +16,9 @@ const ColorPickerField = ({
   helperText,
   required,
   inputProps,
+  onChange,
 }: FieldProps) => {
+  const [value, setValue] = useState<string>()
   const [displayColorPicker, setDisplayColorPicker] = useState(false)
   const [colorPicker, setColorPicker] = useState({
     displayColorPicker: false,
@@ -35,10 +37,13 @@ const ColorPickerField = ({
       color: color.rgb,
       colorHex: color.hex,
     })
+    onChange?.(name, color.hex)
+    setValue(color.hex)
   }
 
   const handleMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
+    setValue(colorPicker.colorHex)
   }
 
   return (
@@ -69,6 +74,7 @@ const ColorPickerField = ({
                           ...colorPicker,
                           displayColorPicker: !colorPicker.displayColorPicker,
                         })
+                        setValue(colorPicker.colorHex)
                       }}
                       onMouseDown={handleMouseDown}
                     >

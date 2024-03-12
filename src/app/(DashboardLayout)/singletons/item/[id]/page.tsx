@@ -1,41 +1,19 @@
 'use client'
 import PageHeader, { PageMeta } from '@/app/(DashboardLayout)/components/shared/PageHeader'
-import { FieldSchema, Singleton, SingletonWithItem } from '@/type/api'
+import { FieldSchema, SingletonWithItem } from '@/type/api'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import axios from '@/lib/axios'
 import * as yup from 'yup'
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer'
-import {
-  Box,
-  CircularProgress,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  IconButton,
-  InputAdornment,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Stack,
-  Switch,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, CircularProgress, Grid, Stack, Typography } from '@mui/material'
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard'
 import { TemporaryField, useAddedFields } from '@/hooks/temporaryAddedFields'
 import { useFieldsStore } from '@/hooks/availableFields'
-import { Controller, useForm } from 'react-hook-form'
-import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import humanizeString from 'humanize-string'
-import CustomSelect from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomSelect'
 import CustomButton from '@/app/(DashboardLayout)/components/shared/CustomButton'
-import { Visibility } from '@mui/icons-material'
-import { DatePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import TextareaField from '@/app/(DashboardLayout)/components/forms/field-schemas/TextareaField'
 import TextInputField from '@/app/(DashboardLayout)/components/forms/field-schemas/TextInputField'
 import SelectField from '@/app/(DashboardLayout)/components/forms/field-schemas/SelectField'
@@ -43,9 +21,9 @@ import BooleanField from '@/app/(DashboardLayout)/components/forms/field-schemas
 import PasswordField from '@/app/(DashboardLayout)/components/forms/field-schemas/PasswordField'
 import DatePickerField from '@/app/(DashboardLayout)/components/forms/field-schemas/DatePickerField'
 import TimePickerField from '@/app/(DashboardLayout)/components/forms/field-schemas/TImePickerField'
-import { enqueueSnackbar } from 'notistack'
 import moment from 'moment'
 import ColorPickerField from '@/app/(DashboardLayout)/components/forms/field-schemas/ColorPickerField'
+import CodeEditorField from '@/app/(DashboardLayout)/components/forms/field-schemas/CodeEditorField'
 
 interface DynamicForm {
   [key: string]: yup.StringSchema | yup.NumberSchema // Define other schema types as needed
@@ -57,6 +35,7 @@ const SingletonItemPage = ({ params }: { params: { id: string } }) => {
 
   const addedFields = useAddedFields()
   const constructedFields = useAddedFields().fields
+  console.log('🚀 ~ SingletonItemPage ~ constructedFields:', constructedFields)
   const availableFields = useFieldsStore.getState().fields
 
   const PageMeta: PageMeta = {
@@ -387,6 +366,29 @@ const SingletonItemPage = ({ params }: { params: { id: string } }) => {
                           }}
                         ></ColorPickerField>
                       )
+                      break
+
+                    case 'code-editor':
+                      console.log('code editor comp')
+                      fieldComponent = (
+                        <CodeEditorField
+                          key={fieldData.uniqueId}
+                          name={fieldData.uniqueId}
+                          label={fieldData.label}
+                          helperText={fieldData.helperText}
+                          control={control}
+                          errors={errors}
+                          inputProps={fieldData.metadata}
+                          onChange={(key, value) => {
+                            setValue(key, value)
+                          }}
+                        ></CodeEditorField>
+                      )
+                      break
+
+                    case 'image':
+                      console.log('image comp')
+                      fieldComponent = <p>asdasd image</p>
                       break
 
                     default:
